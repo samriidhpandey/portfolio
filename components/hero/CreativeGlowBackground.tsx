@@ -13,13 +13,13 @@ export default function CreativeGlowBackground() {
     if (!ctx) return;
 
     let animationFrameId: number;
-    let width = (canvas.width = window.innerWidth);
-    let height = (canvas.height = window.innerHeight);
+    let width = (canvas.width = canvas.parentElement?.clientWidth || window.innerWidth);
+    let height = (canvas.height = canvas.parentElement?.clientHeight || window.innerHeight);
 
     const handleResize = () => {
       if (!canvas) return;
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
+      width = canvas.width = canvas.parentElement?.clientWidth || window.innerWidth;
+      height = canvas.height = canvas.parentElement?.clientHeight || window.innerHeight;
     };
 
     const handleMouseMove = (e: MouseEvent) => {
@@ -56,11 +56,11 @@ export default function CreativeGlowBackground() {
     }[] = [];
 
     const colorPalette = [
-      { fill: "#FF5722", glow: "rgba(255, 87, 34, 0.6)" },
-      { fill: "#FF6B00", glow: "rgba(255, 107, 0, 0.7)" },
-      { fill: "#F97316", glow: "rgba(249, 115, 22, 0.65)" },
-      { fill: "#F59E0B", glow: "rgba(245, 158, 11, 0.55)" },
-      { fill: "#FB923C", glow: "rgba(251, 146, 60, 0.6)" }
+      { fill: "#FF5722", glow: "rgba(255, 87, 34, 0.7)" },
+      { fill: "#FF6B00", glow: "rgba(255, 107, 0, 0.8)" },
+      { fill: "#F97316", glow: "rgba(249, 115, 22, 0.75)" },
+      { fill: "#F59E0B", glow: "rgba(245, 158, 11, 0.65)" },
+      { fill: "#FB923C", glow: "rgba(251, 146, 60, 0.7)" }
     ];
 
     for (let i = 0; i < particleCount; i++) {
@@ -75,7 +75,7 @@ export default function CreativeGlowBackground() {
         radius: 2 + Math.random() * 3.5,
         vx: (Math.random() - 0.5) * 0.7,
         vy: (Math.random() - 0.5) * 0.7,
-        alpha: 0.35 + Math.random() * 0.45,
+        alpha: 0.4 + Math.random() * 0.45,
         color: pColor.fill,
         glowColor: pColor.glow,
         sizeGlow: 10 + Math.random() * 16,
@@ -84,14 +84,14 @@ export default function CreativeGlowBackground() {
       });
     }
 
-    // Floating tech symbols & glyphs in background
+    // Floating tech symbols in background
     const techGlyphs = [
-      { text: "< />", x: width * 0.12, y: height * 0.25, vx: 0.2, vy: 0.15, size: 14, rot: 0 },
-      { text: "✦ AI", x: width * 0.85, y: height * 0.22, vx: -0.15, vy: 0.2, size: 13, rot: 0 },
-      { text: "{ }", x: width * 0.2, y: height * 0.75, vx: 0.18, vy: -0.15, size: 15, rot: 0 },
-      { text: "⚡ FAST", x: width * 0.78, y: height * 0.78, vx: -0.2, vy: -0.1, size: 12, rot: 0 },
-      { text: "SEO ↑", x: width * 0.08, y: height * 0.55, vx: 0.1, vy: -0.2, size: 13, rot: 0 },
-      { text: "99.9%", x: width * 0.9, y: height * 0.48, vx: -0.12, vy: 0.18, size: 12, rot: 0 }
+      { text: "< />", x: width * 0.12, y: height * 0.25, vx: 0.2, vy: 0.15, size: 14 },
+      { text: "✦ AI", x: width * 0.85, y: height * 0.22, vx: -0.15, vy: 0.2, size: 13 },
+      { text: "{ }", x: width * 0.2, y: height * 0.75, vx: 0.18, vy: -0.15, size: 15 },
+      { text: "⚡ FAST", x: width * 0.78, y: height * 0.78, vx: -0.2, vy: -0.1, size: 12 },
+      { text: "SEO ↑", x: width * 0.08, y: height * 0.55, vx: 0.1, vy: -0.2, size: 13 },
+      { text: "99.9%", x: width * 0.9, y: height * 0.48, vx: -0.12, vy: 0.18, size: 12 }
     ];
 
     let step = 0;
@@ -109,7 +109,7 @@ export default function CreativeGlowBackground() {
         mouseRef.current.y = -1000;
       }
 
-      // 1. Dynamic Interactive Cursor Radial Glow Spotlight
+      // 1. Dynamic Interactive Cursor Spotlight
       if (mouseRef.current.x > 0 && mouseRef.current.y > 0) {
         const radGrad = ctx.createRadialGradient(
           mouseRef.current.x,
@@ -119,8 +119,8 @@ export default function CreativeGlowBackground() {
           mouseRef.current.y,
           mouseRef.current.radius
         );
-        radGrad.addColorStop(0, "rgba(255, 107, 0, 0.14)");
-        radGrad.addColorStop(0.5, "rgba(245, 158, 11, 0.07)");
+        radGrad.addColorStop(0, "rgba(255, 107, 0, 0.16)");
+        radGrad.addColorStop(0.5, "rgba(245, 158, 11, 0.08)");
         radGrad.addColorStop(1, "rgba(255, 255, 255, 0)");
 
         ctx.save();
@@ -138,18 +138,18 @@ export default function CreativeGlowBackground() {
         
         if (w % 2 === 0) {
           waveGradient.addColorStop(0, "rgba(255, 107, 0, 0)");
-          waveGradient.addColorStop(0.3, "rgba(255, 107, 0, 0.18)");
-          waveGradient.addColorStop(0.7, "rgba(245, 158, 11, 0.18)");
+          waveGradient.addColorStop(0.3, "rgba(255, 107, 0, 0.22)");
+          waveGradient.addColorStop(0.7, "rgba(245, 158, 11, 0.22)");
           waveGradient.addColorStop(1, "rgba(255, 107, 0, 0)");
         } else {
           waveGradient.addColorStop(0, "rgba(249, 115, 22, 0)");
-          waveGradient.addColorStop(0.35, "rgba(249, 115, 22, 0.15)");
-          waveGradient.addColorStop(0.65, "rgba(255, 87, 34, 0.15)");
+          waveGradient.addColorStop(0.35, "rgba(249, 115, 22, 0.18)");
+          waveGradient.addColorStop(0.65, "rgba(255, 87, 34, 0.18)");
           waveGradient.addColorStop(1, "rgba(249, 115, 22, 0)");
         }
 
         ctx.strokeStyle = waveGradient;
-        ctx.lineWidth = 2 + (w % 2);
+        ctx.lineWidth = 2.5;
 
         for (let x = 0; x <= width; x += 8) {
           // Dynamic mouse elevation ripple
@@ -185,7 +185,7 @@ export default function CreativeGlowBackground() {
 
           if (dist < 140) {
             ctx.beginPath();
-            const strokeOpacity = 0.35 * (1 - dist / 140);
+            const strokeOpacity = 0.38 * (1 - dist / 140);
             ctx.strokeStyle = `rgba(249, 115, 22, ${strokeOpacity})`;
             ctx.lineWidth = 1.3;
             ctx.moveTo(particles[i].x, particles[i].y);
@@ -238,7 +238,7 @@ export default function CreativeGlowBackground() {
       // 5. Floating Tech Glyphs & Badges in Background
       ctx.save();
       ctx.font = "bold 11px monospace";
-      ctx.fillStyle = "rgba(249, 115, 22, 0.4)";
+      ctx.fillStyle = "rgba(249, 115, 22, 0.45)";
       techGlyphs.forEach((g) => {
         g.x += g.vx;
         g.y += g.vy;
@@ -271,9 +271,9 @@ export default function CreativeGlowBackground() {
       <div className="absolute top-[28%] right-[10%] w-[620px] h-[620px] rounded-full bg-gradient-to-bl from-orange-600/24 via-amber-500/18 to-transparent blur-3xl animate-pulse-slow [animation-delay:2.5s]" />
       <div className="absolute bottom-[10%] left-[30%] w-[680px] h-[500px] rounded-full bg-gradient-to-t from-amber-500/22 via-orange-400/18 to-transparent blur-3xl animate-pulse-slow [animation-delay:5s]" />
 
-      {/* Floating Animated Radiant Beacon Waves */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full border border-orange-500/15 animate-ping [animation-duration:8s] opacity-40" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[950px] h-[950px] rounded-full border border-amber-500/10 animate-ping [animation-duration:12s] [animation-delay:4s] opacity-30" />
+      {/* Permanent Rotating Orbital Tech Rings */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[650px] h-[650px] rounded-full border border-orange-500/20 animate-spin [animation-duration:45s] opacity-60" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[900px] rounded-full border border-dashed border-amber-500/15 animate-spin [animation-duration:65s] [animation-direction:reverse] opacity-50" />
 
       {/* Interactive HTML5 Canvas Wave & Particle Flowfield */}
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full opacity-95" />

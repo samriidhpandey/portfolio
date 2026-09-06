@@ -20,6 +20,12 @@ import AmbientBackground from "@/components/AmbientBackground";
 export default function Home() {
   const [loaded, setLoaded] = useState(false);
 
+  useEffect(() => {
+    if (!window.location.hash) {
+      window.scrollTo(0, 0);
+    }
+  }, []);
+
   return (
     <SmoothScroll>
       <div className="relative min-h-screen bg-[#FAFAFB] text-zinc-900 selection:bg-orange-500/20 selection:text-orange-700">

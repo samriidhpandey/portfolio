@@ -243,7 +243,6 @@ export default function Terminal() {
           onKeyDown={handleKeyDown}
           placeholder="type 'help', 'eval', 'projects'..."
           className="w-full bg-transparent border-none outline-none text-white text-xs font-mono placeholder:text-zinc-600 font-medium"
-          autoFocus
           spellCheck={false}
         />
       </div>
