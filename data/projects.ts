@@ -131,6 +131,7 @@ export const projectsData: ProjectItem[] = [
     technologies: ["Next.js", "TypeScript", "Python", "FastAPI", "PostgreSQL", "Tailwind CSS", "Docker"],
     githubUrl: "https://github.com/samridhpandey/synapse-cloud",
     demoUrl: "https://synapse.demo.internal",
+    image: "/projects/synapse.jpg",
     accentColor: "#FF6B00",
     featured: true,
     metrics: [
@@ -159,6 +160,7 @@ export const projectsData: ProjectItem[] = [
     technologies: ["Go", "Python", "Redis", "Docker", "Prometheus", "Grafana"],
     githubUrl: "https://github.com/samridhpandey/hyperscale-ai-mesh",
     demoUrl: "https://hyperscale.demo.internal",
+    image: "/projects/hyperscale.jpg",
     accentColor: "#A855F7",
     featured: false,
     metrics: [
@@ -187,6 +189,7 @@ export const projectsData: ProjectItem[] = [
     technologies: ["TypeScript", "Playwright", "Python", "PyTorch", "Next.js"],
     githubUrl: "https://github.com/samridhpandey/automata-flow",
     demoUrl: "https://automata.demo.internal",
+    image: "/projects/automata.jpg",
     accentColor: "#3B82F6",
     featured: false,
     metrics: [

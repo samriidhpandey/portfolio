@@ -19,7 +19,14 @@ export default function Projects() {
         try {
           const parsed = JSON.parse(saved);
           if (Array.isArray(parsed) && parsed.length > 0) {
-            setAllProjects(parsed);
+            const merged = parsed.map((item: ProjectItem) => {
+              const def = projectsData.find((d) => d.id === item.id);
+              return {
+                ...item,
+                image: item.image || (def ? def.image : undefined)
+              };
+            });
+            setAllProjects(merged);
             return;
           }
         } catch (e) {}
