@@ -33,12 +33,32 @@ export const metadata: Metadata = {
     description: "Architecting intelligent systems, distributed AI pipelines, and resilient full-stack web experiences.",
     url: "https://samridhpandey.dev",
     siteName: "Samridh Pandey Portfolio",
+    images: [
+      {
+        url: "/icon-512.png",
+        width: 512,
+        height: 512,
+        alt: "Samridh Pandey — SP Logo"
+      }
+    ],
     locale: "en_US",
     type: "website"
   },
   robots: {
     index: true,
     follow: true
+  },
+  icons: {
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/icon.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon.ico", sizes: "any" }
+    ],
+    shortcut: "/favicon.svg",
+    apple: [
+      { url: "/apple-icon.png", sizes: "180x180", type: "image/png" },
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }
+    ]
   }
 };
 

@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <defs>
+    <!-- Obsidian Metallic Background -->
+    <linearGradient id="spBgGrad" x1="10" y1="10" x2="90" y2="90" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0B0D13" />
+      <stop offset="50%" stop-color="#131722" />
+      <stop offset="100%" stop-color="#1B202E" />
+    </linearGradient>
+
+    <!-- Core Electric Orange to Amber Gradient -->
+    <linearGradient id="spOrangeGrad" x1="15" y1="20" x2="85" y2="80" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FF5500" />
+      <stop offset="45%" stop-color="#FF7A00" />
+      <stop offset="85%" stop-color="#F59E0B" />
+      <stop offset="100%" stop-color="#FCD34D" />
+    </linearGradient>
+
+    <!-- Border Glow Gradient -->
+    <linearGradient id="spBorderGrad" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FF6B00" stop-opacity="0.9" />
+      <stop offset="50%" stop-color="#F59E0B" stop-opacity="0.4" />
+      <stop offset="100%" stop-color="#FF5500" stop-opacity="0.8" />
+    </linearGradient>
+
+    <!-- Neural Core Radial Glow -->
+    <radialGradient id="spCoreGlow" cx="50" cy="50" r="40" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FF6B00" stop-opacity="0.4" />
+      <stop offset="60%" stop-color="#FF6B00" stop-opacity="0.1" />
+      <stop offset="100%" stop-color="#FF6B00" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Filter Glow -->
+    <filter id="spGlowFilter" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="2.5" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Outer Squircle Chassis -->
+  <rect
+    x="4"
+    y="4"
+    width="92"
+    height="92"
+    rx="24"
+    fill="url(#spBgGrad)"
+    stroke="url(#spBorderGrad)"
+    stroke-width="3"
+  />
+
+  <!-- Ambient Core Aura -->
+  <circle cx="50" cy="50" r="34" fill="url(#spCoreGlow)" />
+
+  <!-- Tech Corner Circuit Traces -->
+  <path d="M 22 16 L 16 22 L 16 32" stroke="#FF7A00" stroke-width="1.8" stroke-linecap="round" stroke-opacity="0.5" />
+  <path d="M 78 16 L 84 22 L 84 32" stroke="#FF7A00" stroke-width="1.8" stroke-linecap="round" stroke-opacity="0.5" />
+  <path d="M 16 68 L 16 78 L 22 84" stroke="#FF7A00" stroke-width="1.8" stroke-linecap="round" stroke-opacity="0.5" />
+  <path d="M 84 68 L 84 78 L 78 84" stroke="#FF7A00" stroke-width="1.8" stroke-linecap="round" stroke-opacity="0.5" />
+
+  <!-- Monogram: The Futuristic Stylized "S" -->
+  <path
+    d="M 46 27 L 33 27 C 27 27 24 30 24 36 C 24 43 28 46 36 48 L 44 50 C 53 52 57 56 57 63 C 57 70 52 73 45 73 L 28 73"
+    stroke="url(#spOrangeGrad)"
+    stroke-width="6.5"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    filter="url(#spGlowFilter)"
+  />
+
+  <!-- Monogram: The Futuristic Stylized "P" -->
+  <path
+    d="M 53 27 L 66 27 C 73 27 77 31 77 38 C 77 45 73 49 66 49 L 53 49 L 53 73"
+    stroke="url(#spOrangeGrad)"
+    stroke-width="6.5"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    filter="url(#spGlowFilter)"
+  />
+
+  <!-- Neural Synapse Interconnect Nodes (Glowing Dots) -->
+  <circle cx="46" cy="27" r="3.8" fill="#FCD34D" />
+  <circle cx="77" cy="38" r="3.8" fill="#FCD34D" />
+  <circle cx="53" cy="49" r="4.5" fill="#FFFFFF" stroke="#FF5500" stroke-width="2.2" />
+  <circle cx="28" cy="73" r="3.8" fill="#FF7A00" />
+  <circle cx="53" cy="73" r="3.8" fill="#F59E0B" />
+
+  <!-- Center Diamond Sparkle -->
+  <circle cx="53" cy="49" r="1.8" fill="#FFFFFF" />
+</svg>

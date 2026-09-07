@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Download, Printer, Copy, Check, FileText, ExternalLink, Mail, Phone, MapPin, Briefcase, GraduationCap, Award, Code2 } from "lucide-react";
 import { sound } from "@/lib/audio";
+import Logo from "@/components/Logo";
 
 export default function ResumeViewer() {
   const [copied, setCopied] = useState(false);
@@ -25,7 +26,7 @@ export default function ResumeViewer() {
       {/* Resume Action Bar (Hidden in Print) */}
       <div className="p-4 sm:p-6 bg-zinc-50/80 border-b border-zinc-200/80 flex flex-wrap items-center justify-between gap-4 print:hidden">
         <div className="flex items-center gap-2 font-mono text-xs text-orange-600 font-bold uppercase tracking-wider">
-          <FileText className="w-4 h-4 text-orange-500" />
+          <Logo size="xs" variant="icon" animated={false} />
           <span>OFFICIAL CURRICULUM VITAE // SAMRIDH PANDEY</span>
         </div>
 
@@ -54,13 +55,16 @@ export default function ResumeViewer() {
         {/* Header Block */}
         <div className="border-b border-zinc-200 pb-8 space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div>
-              <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-zinc-900">
-                SAMRIDH PANDEY
-              </h1>
-              <p className="text-base sm:text-lg font-mono font-bold text-orange-600 mt-1">
-                AI/ML Engineer × Full-Stack Web Developer × Growth Strategist
-              </p>
+            <div className="flex items-center gap-4">
+              <Logo size="lg" variant="icon" animated={false} />
+              <div>
+                <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-zinc-900">
+                  SAMRIDH PANDEY
+                </h1>
+                <p className="text-base sm:text-lg font-mono font-bold text-orange-600 mt-1">
+                  AI/ML Engineer × Full-Stack Web Developer × Growth Strategist
+                </p>
+              </div>
             </div>
             <div className="text-left sm:text-right font-mono text-xs text-zinc-500 space-y-1">
               <p className="flex items-center sm:justify-end gap-1.5">

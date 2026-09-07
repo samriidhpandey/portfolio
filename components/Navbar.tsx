@@ -6,6 +6,7 @@ import { Menu, X, Volume2, VolumeX, Cpu, ArrowUpRight, Briefcase } from "lucide-
 import { sound } from "@/lib/audio";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
+import Logo from "@/components/Logo";
 
 interface NavLinkItem {
   name: string;
@@ -187,16 +188,7 @@ export default function Navbar() {
           className="flex items-center gap-2 group cursor-pointer"
           onMouseEnter={() => sound.playHover()}
         >
-          <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-gradient-to-br from-orange-500/15 to-amber-500/15 border border-orange-500/30 flex items-center justify-center group-hover:border-orange-500 group-hover:shadow-[0_0_12px_rgba(249,115,22,0.3)] transition-all shadow-xs">
-            <Cpu className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-orange-600 group-hover:scale-110 transition-transform" />
-          </div>
-          <div className="flex flex-col">
-            <span className="font-mono text-xs sm:text-sm tracking-wider font-extrabold text-zinc-900 group-hover:text-orange-600 transition-colors flex items-center gap-1">
-              SAMRIDH
-              <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse" />
-            </span>
-            <span className="text-[8px] sm:text-[9px] font-mono text-zinc-400 tracking-wider hidden sm:block">AI/ML × DEV</span>
-          </div>
+          <Logo size="sm" variant="full" />
         </Link>
 
         {/* Desktop Navigation Links */}
@@ -302,10 +294,7 @@ export default function Navbar() {
               {/* Drawer Header */}
               <div className="flex items-center justify-between pb-2.5 mb-1 border-b border-zinc-100">
                 <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
-                  <span className="text-[11px] font-mono text-zinc-900 font-bold uppercase tracking-wider">
-                    NAVIGATION MENU
-                  </span>
+                  <Logo size="xs" variant="full" />
                 </div>
                 <button
                   onClick={() => setMobileMenuOpen(false)}

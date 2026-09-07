@@ -275,27 +275,27 @@ export default function AmbientBackground() {
       {/* HARDWARE-ACCELERATED ULTRA-SMOOTH (60 FPS) GLASS SHAPES                  */}
       {/* ========================================================================= */}
 
-      {/* 1. Top-Right Floating Frosted Glass Capsule (GPU Accelerated, Lightweight Blur) */}
+      {/* 1. Top-Right Floating Frosted Glass Capsule (GPU Accelerated, Lightweight Glow) */}
       <motion.div
         animate={{
-          y: [0, -18, 0],
-          rotate: [0, 4, 0],
+          y: [0, -14, 0],
+          rotate: [0, 3, 0],
         }}
-        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-        className="fixed -top-[8%] -right-[6vw] w-[50vw] sm:w-[38vw] max-w-[500px] h-[55vh] pointer-events-none z-0 transform-gpu will-change-transform rounded-[40px] bg-gradient-to-br from-white/70 via-orange-100/30 to-amber-100/20 border border-white/80 shadow-[0_15px_40px_rgba(249,115,22,0.12)] backdrop-blur-sm"
+        transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+        className="fixed -top-[8%] -right-[6vw] w-[50vw] sm:w-[38vw] max-w-[500px] h-[55vh] pointer-events-none z-0 transform-gpu will-change-transform rounded-[40px] bg-gradient-to-br from-white/70 via-orange-100/25 to-amber-100/15 border border-white/80 shadow-[0_15px_40px_rgba(249,115,22,0.08)]"
       >
         <div className="absolute inset-0 rounded-[inherit] bg-gradient-to-tr from-transparent via-white/50 to-transparent opacity-80" />
-        <div className="absolute top-[15%] left-[20%] w-[50%] h-[50%] rounded-full bg-gradient-to-br from-orange-400/20 via-amber-300/15 to-transparent blur-xl" />
+        <div className="absolute top-[15%] left-[20%] w-[50%] h-[50%] rounded-full bg-gradient-to-br from-orange-400/15 via-amber-300/10 to-transparent blur-xl" />
       </motion.div>
 
       {/* 2. Mid-Right 3D Floating Glass Pill */}
       <motion.div
         animate={{
-          y: [0, 20, 0],
-          rotate: [10, -6, 10],
+          y: [0, 16, 0],
+          rotate: [8, -5, 8],
         }}
-        transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-        className="fixed top-[32%] right-[4%] w-[280px] sm:w-[360px] h-[140px] sm:h-[180px] rounded-3xl transform-gpu will-change-transform bg-gradient-to-br from-white/80 via-orange-50/40 to-amber-50/25 border border-white/90 shadow-[0_12px_32px_rgba(249,115,22,0.1)] backdrop-blur-sm pointer-events-none z-0"
+        transition={{ duration: 14, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+        className="fixed top-[32%] right-[4%] w-[280px] sm:w-[360px] h-[140px] sm:h-[180px] rounded-3xl transform-gpu will-change-transform bg-gradient-to-br from-white/80 via-orange-50/35 to-amber-50/20 border border-white/90 shadow-[0_12px_32px_rgba(249,115,22,0.07)] pointer-events-none z-0"
       >
         <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-white to-transparent opacity-90" />
       </motion.div>
@@ -303,23 +303,23 @@ export default function AmbientBackground() {
       {/* 3. Top-Left Floating Glass Orb */}
       <motion.div
         animate={{
-          y: [0, -20, 0],
-          x: [0, -12, 0],
+          y: [0, -16, 0],
+          x: [0, -10, 0],
         }}
-        transition={{ duration: 9, repeat: Infinity, ease: "easeInOut", delay: 1.5 }}
-        className="fixed top-[14%] left-[4%] w-[220px] h-[220px] rounded-full transform-gpu will-change-transform bg-gradient-to-tr from-white/70 via-orange-100/35 to-transparent border border-white/80 shadow-[0_10px_30px_rgba(249,115,22,0.08)] backdrop-blur-sm pointer-events-none z-0"
+        transition={{ duration: 11, repeat: Infinity, ease: "easeInOut", delay: 1.5 }}
+        className="fixed top-[14%] left-[4%] w-[220px] h-[220px] rounded-full transform-gpu will-change-transform bg-gradient-to-tr from-white/70 via-orange-100/30 to-transparent border border-white/80 shadow-[0_10px_30px_rgba(249,115,22,0.06)] pointer-events-none z-0"
       >
-        <div className="absolute top-5 left-5 w-12 h-12 rounded-full bg-orange-400/20 blur-md" />
+        <div className="absolute top-5 left-5 w-12 h-12 rounded-full bg-orange-400/15 blur-md" />
       </motion.div>
 
       {/* 4. Bottom-Right Floating Glass Prism Panel */}
       <motion.div
         animate={{
-          y: [0, -20, 0],
-          rotate: [-12, 8, -12],
+          y: [0, -16, 0],
+          rotate: [-10, 6, -10],
         }}
-        transition={{ duration: 14, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-        className="fixed bottom-[12%] right-[6%] w-[240px] sm:w-[300px] h-[160px] sm:h-[200px] rounded-3xl transform-gpu will-change-transform bg-gradient-to-tl from-white/75 via-amber-50/35 to-orange-50/20 border border-white/85 shadow-[0_12px_35px_rgba(249,115,22,0.1)] backdrop-blur-sm pointer-events-none z-0"
+        transition={{ duration: 16, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+        className="fixed bottom-[12%] right-[6%] w-[240px] sm:w-[300px] h-[160px] sm:h-[200px] rounded-3xl transform-gpu will-change-transform bg-gradient-to-tl from-white/75 via-amber-50/30 to-orange-50/15 border border-white/85 shadow-[0_12px_35px_rgba(249,115,22,0.07)] pointer-events-none z-0"
       />
 
       {/* 5. Concentric Tech Orbital Rings (CSS GPU Accelerated) */}

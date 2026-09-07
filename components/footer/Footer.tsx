@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ArrowUp, Cpu, ShieldCheck } from "lucide-react";
+import { ArrowUp, ShieldCheck } from "lucide-react";
 import { sound } from "@/lib/audio";
 import Link from "next/link";
+import Logo from "@/components/Logo";
 
 export default function Footer() {
   const [timeStr, setTimeStr] = useState("");
@@ -36,13 +37,7 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
         {/* Left: Brand & Copyright */}
         <div className="flex flex-col items-center sm:items-start gap-1">
-          <div className="flex items-center gap-2 text-zinc-900 font-extrabold text-sm">
-            <div className="w-6 h-6 rounded-lg bg-orange-50 border border-orange-200 flex items-center justify-center">
-              <Cpu className="w-3.5 h-3.5 text-orange-600" />
-            </div>
-            <span>SAMRIDH PANDEY</span>
-            <span className="text-zinc-400 font-normal">// AI/ML × FULL-STACK</span>
-          </div>
+          <Logo size="sm" variant="full" />
           <p className="text-zinc-500">
             © 2026 Samridh Pandey. Built with Next.js + Three.js.
           </p>

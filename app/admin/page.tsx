@@ -36,6 +36,7 @@ import SmoothScroll from "@/components/SmoothScroll";
 import { projectsData, ProjectItem } from "@/data/projects";
 import { profileData, ProfileData } from "@/data/profile";
 import { sound } from "@/lib/audio";
+import Logo from "@/components/Logo";
 
 interface ContactMessage {
   id: string;
@@ -348,14 +349,14 @@ export default function AdminPage() {
               animate={{ opacity: 1, scale: 1 }}
               className="w-full max-w-md p-6 sm:p-8 rounded-3xl bg-white border border-orange-500/30 shadow-[0_20px_50px_rgba(249,115,22,0.15)] text-center space-y-6"
             >
-              <div className="w-14 h-14 rounded-2xl bg-orange-50 border border-orange-200 flex items-center justify-center text-orange-600 mx-auto shadow-sm">
-                <Lock className="w-7 h-7" />
+              <div className="flex flex-col items-center justify-center gap-3">
+                <Logo size="lg" variant="icon" />
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-50 text-orange-700 font-mono text-[10px] font-bold uppercase tracking-wider">
+                  <Sparkles className="w-3 h-3 text-orange-500" /> ADMIN GATEKEEPER
+                </div>
               </div>
 
               <div>
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-50 text-orange-700 font-mono text-[10px] font-bold uppercase tracking-wider mb-2">
-                  <Sparkles className="w-3 h-3 text-orange-500" /> ADMIN GATEKEEPER
-                </div>
                 <h1 className="text-2xl font-black text-zinc-900 tracking-tight">
                   Portfolio Admin Portal
                 </h1>
@@ -410,9 +411,7 @@ export default function AdminPage() {
             {/* Top Navigation Bar */}
             <div className="flex flex-wrap items-center justify-between gap-4 p-4 rounded-3xl bg-white border border-zinc-200 shadow-sm">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-orange-500 text-white flex items-center justify-center font-black font-mono shadow-sm">
-                  SP
-                </div>
+                <Logo size="md" variant="icon" />
                 <div>
                   <h1 className="text-base sm:text-lg font-black text-zinc-900 tracking-tight flex items-center gap-2">
                     Portfolio Admin Center

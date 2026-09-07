@@ -169,8 +169,10 @@ function SynapticSphere({ mouse }: { mouse: { x: number; y: number } }) {
 }
 
 export default function NeuralCore3D() {
+  const containerRef = useRef<HTMLDivElement>(null);
   const [mouse, setMouse] = useState({ x: 0, y: 0 });
   const [isClient, setIsClient] = useState(false);
+  const [isInView, setIsInView] = useState(true);
 
   useEffect(() => {
     setIsClient(true);
@@ -182,7 +184,23 @@ export default function NeuralCore3D() {
     };
 
     window.addEventListener("mousemove", handleMouseMove, { passive: true });
-    return () => window.removeEventListener("mousemove", handleMouseMove);
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        setIsInView(entry.isIntersecting);
+      },
+      { threshold: 0.05 }
+    );
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      observer.disconnect();
+    };
   }, []);
 
   if (!isClient) {
@@ -194,15 +212,16 @@ export default function NeuralCore3D() {
   }
 
   return (
-    <div className="w-full h-full relative cursor-grab active:cursor-grabbing">
+    <div ref={containerRef} className="w-full h-full relative cursor-grab active:cursor-grabbing transform-gpu">
       <Canvas
+        frameloop={isInView ? "always" : "never"}
         camera={{ position: [0, 0, 6.2], fov: 45 }}
         gl={{
           antialias: true,
           powerPreference: "high-performance",
           alpha: true
         }}
-        dpr={[1, 2]}
+        dpr={[1, 1.25]}
       >
         <ambientLight intensity={0.6} />
         <pointLight position={[10, 10, 10]} intensity={2.0} color="#FF6B00" />

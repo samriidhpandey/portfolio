@@ -29,11 +29,13 @@ export default function Home() {
         {/* Cinematic System Boot Sequence */}
         {!loaded && <Loader onComplete={() => setLoaded(true)} />}
 
-        {/* Floating Minimal Glass Navbar */}
-        <Navbar />
+        {/* Floating Minimal Glass Navbar (Only shown after loaded) */}
+        <div className={`transition-opacity duration-500 ${loaded ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
+          <Navbar />
+        </div>
 
         {/* Main Content Sections */}
-        <main className={`transition-opacity duration-700 ${loaded ? "opacity-100" : "opacity-0"}`}>
+        <main className={`transition-opacity duration-500 ${loaded ? "opacity-100" : "opacity-0"}`}>
           <Hero />
           <Services />
           <About />
@@ -45,7 +47,9 @@ export default function Home() {
         </main>
 
         {/* Cinematic Footer */}
-        <Footer />
+        <div className={`transition-opacity duration-500 ${loaded ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
+          <Footer />
+        </div>
       </div>
     </SmoothScroll>
   );
