@@ -1,37 +1,45 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
   <defs>
-    <!-- Obsidian Metallic Background -->
-    <linearGradient id="spBgGrad" x1="10" y1="10" x2="90" y2="90" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#0B0D13" />
-      <stop offset="50%" stop-color="#131722" />
-      <stop offset="100%" stop-color="#1B202E" />
+    <!-- Deep Obsidian Metallic Chassis Gradient -->
+    <linearGradient id="spHexBg" x1="10" y1="10" x2="90" y2="90" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#080A10" />
+      <stop offset="50%" stop-color="#121622" />
+      <stop offset="100%" stop-color="#1A1F30" />
     </linearGradient>
 
-    <!-- Core Electric Orange to Amber Gradient -->
-    <linearGradient id="spOrangeGrad" x1="15" y1="20" x2="85" y2="80" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#FF5500" />
-      <stop offset="45%" stop-color="#FF7A00" />
-      <stop offset="85%" stop-color="#F59E0B" />
+    <!-- Outer Bevel Glow Gradient -->
+    <linearGradient id="spHexBorder" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FF5500" stop-opacity="0.95" />
+      <stop offset="35%" stop-color="#FF9500" stop-opacity="0.6" />
+      <stop offset="70%" stop-color="#F59E0B" stop-opacity="0.4" />
+      <stop offset="100%" stop-color="#FF5500" stop-opacity="0.9" />
+    </linearGradient>
+
+    <!-- Primary Solar Flame (S & P ribbons) -->
+    <linearGradient id="spRibbonGrad" x1="20" y1="15" x2="85" y2="85" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FF3700" />
+      <stop offset="30%" stop-color="#FF6B00" />
+      <stop offset="70%" stop-color="#FF9E00" />
       <stop offset="100%" stop-color="#FCD34D" />
     </linearGradient>
 
-    <!-- Border Glow Gradient -->
-    <linearGradient id="spBorderGrad" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#FF6B00" stop-opacity="0.9" />
-      <stop offset="50%" stop-color="#F59E0B" stop-opacity="0.4" />
-      <stop offset="100%" stop-color="#FF5500" stop-opacity="0.8" />
+    <!-- P-Loop Shimmer Accent Gradient -->
+    <linearGradient id="spPLoopGrad" x1="50" y1="20" x2="80" y2="52" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFA800" />
+      <stop offset="50%" stop-color="#FF6B00" />
+      <stop offset="100%" stop-color="#FF3B00" />
     </linearGradient>
 
-    <!-- Neural Core Radial Glow -->
-    <radialGradient id="spCoreGlow" cx="50" cy="50" r="40" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#FF6B00" stop-opacity="0.4" />
-      <stop offset="60%" stop-color="#FF6B00" stop-opacity="0.1" />
-      <stop offset="100%" stop-color="#FF6B00" stop-opacity="0" />
+    <!-- Central Singularity Radial Glow -->
+    <radialGradient id="spNexusGlow" cx="50" cy="50" r="35" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FF6B00" stop-opacity="0.5" />
+      <stop offset="50%" stop-color="#FF9500" stop-opacity="0.15" />
+      <stop offset="100%" stop-color="#FF5500" stop-opacity="0" />
     </radialGradient>
 
-    <!-- Filter Glow -->
-    <filter id="spGlowFilter" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur stdDeviation="2.5" result="blur" />
+    <!-- High-Definition Drop Shadow / Neon Bloom -->
+    <filter id="spNeonBloom" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="2.8" result="blur" />
       <feMerge>
         <feMergeNode in="blur" />
         <feMergeNode in="SourceGraphic" />
@@ -39,54 +47,96 @@
     </filter>
   </defs>
 
-  <!-- Outer Squircle Chassis -->
-  <rect
-    x="4"
-    y="4"
-    width="92"
-    height="92"
-    rx="24"
-    fill="url(#spBgGrad)"
-    stroke="url(#spBorderGrad)"
-    stroke-width="3"
+  <!-- ======================================================== -->
+  <!-- 1. FACETED ISOMETRIC HEXAGON CHASSIS                     -->
+  <!-- ======================================================== -->
+  <path
+    d="M 50 6 L 86 26.8 A 5 5 0 0 1 88.5 31.1 L 88.5 68.9 A 5 5 0 0 1 86 73.2 L 50 94 A 5 5 0 0 1 47.5 94 L 14 73.2 A 5 5 0 0 1 11.5 68.9 L 11.5 31.1 A 5 5 0 0 1 14 26.8 Z"
+    fill="url(#spHexBg)"
+    stroke="url(#spHexBorder)"
+    stroke-width="2.8"
+    stroke-linejoin="round"
   />
 
-  <!-- Ambient Core Aura -->
-  <circle cx="50" cy="50" r="34" fill="url(#spCoreGlow)" />
+  <!-- Subtle Core Radiation -->
+  <circle cx="50" cy="50" r="32" fill="url(#spNexusGlow)" />
 
-  <!-- Tech Corner Circuit Traces -->
-  <path d="M 22 16 L 16 22 L 16 32" stroke="#FF7A00" stroke-width="1.8" stroke-linecap="round" stroke-opacity="0.5" />
-  <path d="M 78 16 L 84 22 L 84 32" stroke="#FF7A00" stroke-width="1.8" stroke-linecap="round" stroke-opacity="0.5" />
-  <path d="M 16 68 L 16 78 L 22 84" stroke="#FF7A00" stroke-width="1.8" stroke-linecap="round" stroke-opacity="0.5" />
-  <path d="M 84 68 L 84 78 L 78 84" stroke="#FF7A00" stroke-width="1.8" stroke-linecap="round" stroke-opacity="0.5" />
+  <!-- High-Tech Circuit Geometry Marks -->
+  <path d="M 50 6 L 50 18" stroke="#FF7A00" stroke-width="1.8" stroke-linecap="round" stroke-opacity="0.5" />
+  <path d="M 50 94 L 50 82" stroke="#FF7A00" stroke-width="1.8" stroke-linecap="round" stroke-opacity="0.5" />
+  <path d="M 12 50 L 22 50" stroke="#FF7A00" stroke-width="1.8" stroke-linecap="round" stroke-opacity="0.4" />
+  <path d="M 88 50 L 78 50" stroke="#FF7A00" stroke-width="1.8" stroke-linecap="round" stroke-opacity="0.4" />
 
-  <!-- Monogram: The Futuristic Stylized "S" -->
+  <!-- Inner Tech Diagonal Corner Traces -->
+  <path d="M 23 31 L 28 36" stroke="#FFA800" stroke-width="1.5" stroke-linecap="round" stroke-opacity="0.4" />
+  <path d="M 77 31 L 72 36" stroke="#FFA800" stroke-width="1.5" stroke-linecap="round" stroke-opacity="0.4" />
+  <path d="M 23 69 L 28 64" stroke="#FFA800" stroke-width="1.5" stroke-linecap="round" stroke-opacity="0.4" />
+  <path d="M 77 69 L 72 64" stroke="#FFA800" stroke-width="1.5" stroke-linecap="round" stroke-opacity="0.4" />
+
+  <!-- ======================================================== -->
+  <!-- 2. UNIQUE CONTINUOUS "SP" FUSION NEXUS MARK              -->
+  <!-- ======================================================== -->
+
+  <!-- Glow Shadow Layer for the Monogram -->
+  <g filter="url(#spNeonBloom)" opacity="0.95">
+    <!-- "S" Geometric Ribbon: Top sweep -> Angled diagonal -> Bottom loop -->
+    <path
+      d="M 45 25 L 30 25 A 6 6 0 0 0 24 31 L 24 37 A 6 6 0 0 0 30 43 L 44 47 A 6 6 0 0 1 50 53 L 50 59 A 6 6 0 0 1 44 65 L 28 65"
+      stroke="url(#spRibbonGrad)"
+      stroke-width="6.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+
+    <!-- "P" Power Spine & Head Loop: Vertical backbone -> Right crown loop -->
+    <path
+      d="M 52 25 L 70 25 A 9 9 0 0 1 79 34 L 79 36 A 9 9 0 0 1 70 45 L 52 45 M 52 25 L 52 75"
+      stroke="url(#spPLoopGrad)"
+      stroke-width="6.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  </g>
+
+  <!-- Crisp Core Stroke (Sharp Specular Highlight) -->
   <path
-    d="M 46 27 L 33 27 C 27 27 24 30 24 36 C 24 43 28 46 36 48 L 44 50 C 53 52 57 56 57 63 C 57 70 52 73 45 73 L 28 73"
-    stroke="url(#spOrangeGrad)"
-    stroke-width="6.5"
+    d="M 45 25 L 30 25 A 6 6 0 0 0 24 31 L 24 37 A 6 6 0 0 0 30 43 L 44 47 A 6 6 0 0 1 50 53 L 50 59 A 6 6 0 0 1 44 65 L 28 65"
+    stroke="#FFF"
+    stroke-width="1.5"
     stroke-linecap="round"
     stroke-linejoin="round"
-    filter="url(#spGlowFilter)"
+    stroke-opacity="0.75"
   />
 
-  <!-- Monogram: The Futuristic Stylized "P" -->
   <path
-    d="M 53 27 L 66 27 C 73 27 77 31 77 38 C 77 45 73 49 66 49 L 53 49 L 53 73"
-    stroke="url(#spOrangeGrad)"
-    stroke-width="6.5"
+    d="M 52 25 L 70 25 A 9 9 0 0 1 79 34 L 79 36 A 9 9 0 0 1 70 45 L 52 45 M 52 25 L 52 75"
+    stroke="#FFF"
+    stroke-width="1.5"
     stroke-linecap="round"
     stroke-linejoin="round"
-    filter="url(#spGlowFilter)"
+    stroke-opacity="0.75"
   />
 
-  <!-- Neural Synapse Interconnect Nodes (Glowing Dots) -->
-  <circle cx="46" cy="27" r="3.8" fill="#FCD34D" />
-  <circle cx="77" cy="38" r="3.8" fill="#FCD34D" />
-  <circle cx="53" cy="49" r="4.5" fill="#FFFFFF" stroke="#FF5500" stroke-width="2.2" />
-  <circle cx="28" cy="73" r="3.8" fill="#FF7A00" />
-  <circle cx="53" cy="73" r="3.8" fill="#F59E0B" />
+  <!-- ======================================================== -->
+  <!-- 3. SYNAPTIC NEURAL NODES & QUANTUM SINGULARITY CORE       -->
+  <!-- ======================================================== -->
+  <!-- Apex Synapse (Top Left) -->
+  <circle cx="45" cy="25" r="3.2" fill="#FDE047" />
+  <circle cx="45" cy="25" r="1.4" fill="#FFFFFF" />
 
-  <!-- Center Diamond Sparkle -->
-  <circle cx="53" cy="49" r="1.8" fill="#FFFFFF" />
+  <!-- P-Loop Apex (Top Right) -->
+  <circle cx="79" cy="35" r="3.2" fill="#FDE047" />
+  <circle cx="79" cy="35" r="1.4" fill="#FFFFFF" />
+
+  <!-- Central Nexus Interlock Diamond (Core Singularity) -->
+  <polygon points="52,41 57,46 52,51 47,46" fill="#FFFFFF" stroke="#FF5500" stroke-width="1.8" />
+  <circle cx="52" cy="46" r="1.2" fill="#FF5500" />
+
+  <!-- Base S Terminus (Bottom Left) -->
+  <circle cx="28" cy="65" r="3.2" fill="#FF6B00" />
+  <circle cx="28" cy="65" r="1.4" fill="#FFFFFF" />
+
+  <!-- Base P Spine Anchor (Bottom Right) -->
+  <circle cx="52" cy="75" r="3.2" fill="#FFA800" />
+  <circle cx="52" cy="75" r="1.4" fill="#FFFFFF" />
 </svg>

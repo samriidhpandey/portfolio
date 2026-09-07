@@ -14,50 +14,43 @@ export default function Loader({ onComplete }: LoaderProps) {
   const [progress, setProgress] = useState(0);
   const [isFinished, setIsFinished] = useState(false);
 
-  // Instant skip or fast completion
+  // Instant skip button handler
   const handleFinish = () => {
-    try {
-      sessionStorage.setItem("sp_portfolio_loaded", "true");
-    } catch {}
     setIsFinished(true);
-    setTimeout(onComplete, 250);
+    onComplete();
   };
 
   useEffect(() => {
-    // Check if user already visited this session
-    try {
-      if (sessionStorage.getItem("sp_portfolio_loaded") === "true") {
-        setIsFinished(true);
-        onComplete();
-        return;
+    // Exactly 1.0 second (1000ms) total sequence:
+    // 0ms -> 780ms: High-precision linear/eased progression from 0% to 100%
+    // 780ms -> 1000ms (220ms): Rocket blast-off lift into orbit & transition
+    const startTime = performance.now();
+    const duration = 780; // ms to reach 100%
+
+    let frameId: number;
+    let completed = false;
+
+    const tick = (now: number) => {
+      if (completed) return;
+      const elapsed = now - startTime;
+      const pct = Math.min(100, Math.round((elapsed / duration) * 100));
+      setProgress(pct);
+
+      if (pct < 100) {
+        frameId = requestAnimationFrame(tick);
+      } else {
+        completed = true;
+        sound.playSuccess();
+        setTimeout(() => {
+          setIsFinished(true);
+          setTimeout(onComplete, 180);
+        }, 220); // 780ms + 220ms = 1000ms (1.0 second)
       }
-    } catch {}
+    };
 
-    // Fast, responsive progress counter (~850ms total)
-    const interval = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          return 100;
-        }
-        // Swift non-linear acceleration
-        const increment = prev < 50 ? 5 : prev < 85 ? 7 : 10;
-        return Math.min(100, prev + increment);
-      });
-    }, 38);
-
-    return () => clearInterval(interval);
+    frameId = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frameId);
   }, [onComplete]);
-
-  useEffect(() => {
-    if (progress >= 100) {
-      sound.playSuccess();
-      const timer = setTimeout(() => {
-        handleFinish();
-      }, 280);
-      return () => clearTimeout(timer);
-    }
-  }, [progress]);
 
   // Telemetry status text
   const getStatusText = () => {
@@ -72,8 +65,8 @@ export default function Loader({ onComplete }: LoaderProps) {
       {!isFinished && (
         <motion.div
           initial={{ opacity: 1 }}
-          exit={{ opacity: 0, y: -16 }}
-          transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+          exit={{ opacity: 0, scale: 1.02 }}
+          transition={{ duration: 0.2, ease: "easeOut" }}
           className="fixed inset-0 z-[9999] flex flex-col items-center justify-between bg-[#FAFAFB] text-zinc-900 select-none overflow-hidden px-4 sm:px-6 py-8 sm:py-12 transform-gpu"
         >
           {/* Subtle Ambient Bright Glow Orbs (NO dark background) */}
@@ -104,13 +97,13 @@ export default function Loader({ onComplete }: LoaderProps) {
             {/* Rocket Motion Container */}
             <motion.div
               animate={{
-                y: progress >= 100 ? -380 : -((progress / 100) * 80),
-                scale: progress >= 100 ? 1.05 : 1,
+                y: progress >= 100 ? -480 : -((progress / 100) * 80),
+                scale: progress >= 100 ? 1.08 : 1,
               }}
               transition={
                 progress >= 100
-                  ? { duration: 0.32, ease: "easeIn" }
-                  : { duration: 0.08, ease: "linear" }
+                  ? { duration: 0.22, ease: "easeIn" }
+                  : { duration: 0.05, ease: "linear" }
               }
               className="relative flex flex-col items-center transform-gpu will-change-transform mb-6"
             >
