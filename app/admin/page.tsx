@@ -79,6 +79,7 @@ export default function AdminPage() {
     description: "",
     githubUrl: "",
     demoUrl: "",
+    image: "",
     technologies: ""
   });
 
@@ -232,6 +233,7 @@ export default function AdminPage() {
         description: proj.description,
         githubUrl: proj.githubUrl,
         demoUrl: proj.demoUrl || "",
+        image: proj.image || "",
         technologies: proj.technologies.join(", ")
       });
     } else {
@@ -241,8 +243,9 @@ export default function AdminPage() {
         subtitle: "",
         category: "Full Stack",
         description: "",
-        githubUrl: "https://github.com/samriidhpandey/",
+        githubUrl: "https://github.com/samridhpandey/",
         demoUrl: "",
+        image: "",
         technologies: "Next.js, TypeScript, Tailwind CSS"
       });
     }
@@ -267,6 +270,7 @@ export default function AdminPage() {
               description: projectForm.description,
               githubUrl: projectForm.githubUrl,
               demoUrl: projectForm.demoUrl,
+              image: projectForm.image || undefined,
               technologies: techArray
             }
           : p
@@ -282,6 +286,7 @@ export default function AdminPage() {
         technologies: techArray,
         githubUrl: projectForm.githubUrl,
         demoUrl: projectForm.demoUrl,
+        image: projectForm.image || undefined,
         accentColor: "#FF6B00",
         featured: true,
         metrics: [{ label: "Client Rating", value: "5.0 ★" }],
@@ -1033,6 +1038,19 @@ export default function AdminPage() {
                       onChange={(e) => setProjectForm({ ...projectForm, technologies: e.target.value })}
                       placeholder="Next.js, TypeScript, Tailwind CSS, Python"
                       className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2 text-sm outline-none focus:border-orange-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="font-mono text-zinc-500 uppercase font-bold block mb-1">
+                      PROJECT PREVIEW IMAGE URL (Optional)
+                    </label>
+                    <input
+                      type="text"
+                      value={projectForm.image}
+                      onChange={(e) => setProjectForm({ ...projectForm, image: e.target.value })}
+                      placeholder="e.g. /projects/neuroflow.jpg or https://image-url.png"
+                      className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2 text-xs outline-none focus:border-orange-500"
                     />
                   </div>
 

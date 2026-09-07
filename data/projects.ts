@@ -8,6 +8,7 @@ export interface ProjectItem {
   technologies: string[];
   githubUrl: string;
   demoUrl?: string;
+  image?: string;
   accentColor: string;
   featured: boolean;
   metrics: {
@@ -43,6 +44,7 @@ export const projectsData: ProjectItem[] = [
     technologies: ["Python", "TypeScript", "LangChain", "FastAPI", "Redis", "Docker", "Next.js"],
     githubUrl: "https://github.com/samridhpandey/neuroflow",
     demoUrl: "https://neuroflow.demo.internal",
+    image: "/projects/neuroflow.jpg",
     accentColor: "#FF6B00",
     featured: true,
     metrics: [
@@ -71,6 +73,7 @@ export const projectsData: ProjectItem[] = [
     technologies: ["PyTorch", "OpenCV", "TensorRT", "Python", "C++", "WebGL"],
     githubUrl: "https://github.com/samridhpandey/auravision",
     demoUrl: "https://auravision.demo.internal",
+    image: "/projects/auravision.jpg",
     accentColor: "#F97316",
     featured: true,
     metrics: [
@@ -99,6 +102,7 @@ export const projectsData: ProjectItem[] = [
     technologies: ["Python", "PyTorch", "Hugging Face", "Qdrant", "Next.js", "Tailwind CSS"],
     githubUrl: "https://github.com/samridhpandey/omnirag-enterprise",
     demoUrl: "https://omnirag.demo.internal",
+    image: "/projects/omnirag.jpg",
     accentColor: "#EA580C",
     featured: true,
     metrics: [
