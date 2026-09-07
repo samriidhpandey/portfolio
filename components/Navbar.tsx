@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Volume2, VolumeX, Cpu, ArrowUpRight, FileText } from "lucide-react";
+import { Menu, X, Volume2, VolumeX, Cpu, ArrowUpRight, Briefcase } from "lucide-react";
 import { sound } from "@/lib/audio";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
@@ -19,8 +19,8 @@ const homeNavLinks = [
 
 const servicesPageNavLinks = [
   { name: "Home", href: "/" },
-  { name: "Services Catalog", href: "#catalog" },
-  { name: "Tools Matrix", href: "#tools" },
+  { name: "Catalog", href: "#catalog" },
+  { name: "Tools", href: "#tools" },
   { name: "Estimator", href: "#estimator" },
   { name: "Workflow", href: "#process" },
   { name: "FAQs", href: "#faqs" },
@@ -31,7 +31,7 @@ const hirePageNavLinks = [
   { name: "Portfolio", href: "/" },
   { name: "Services", href: "/services" },
   { name: "Resume", href: "#resume" },
-  { name: "GitHub Outlet", href: "#github" },
+  { name: "GitHub", href: "#github" },
   { name: "LinkedIn", href: "#linkedin" },
   { name: "Inquire", href: "#contact" }
 ];
@@ -57,11 +57,11 @@ export default function Navbar() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 30);
+      setScrolled(window.scrollY > 20);
 
       const linksWithHashes = currentNavLinks.filter((l) => l.href.startsWith("#"));
       const sections = linksWithHashes.map((l) => l.href.substring(1));
-      const scrollPos = window.scrollY + 220;
+      const scrollPos = window.scrollY + 200;
 
       for (let i = sections.length - 1; i >= 0; i--) {
         const el = document.getElementById(sections[i]);
@@ -75,6 +75,18 @@ export default function Navbar() {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, [currentNavLinks]);
+
+  // Lock body scroll when mobile drawer is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileMenuOpen]);
 
   const handleSoundToggle = () => {
     const muted = sound.toggleMute();
@@ -97,12 +109,12 @@ export default function Navbar() {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-40 flex justify-center pt-3 sm:pt-4 px-4 sm:px-6 pointer-events-none">
+    <header className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-2 sm:pt-4 px-2 sm:px-6 pointer-events-none">
       <nav
-        className={`pointer-events-auto w-full max-w-6xl flex items-center justify-between px-5 py-3 rounded-full transition-all duration-300 ${
+        className={`pointer-events-auto w-full max-w-6xl flex items-center justify-between px-3 sm:px-5 py-2 sm:py-3 rounded-full transition-all duration-300 ${
           scrolled
-            ? "glass-panel bg-white/95 shadow-[0_8px_25px_rgba(249,115,22,0.08)] border border-orange-500/20"
-            : "bg-white/70 backdrop-blur-md border border-zinc-200/60 shadow-sm"
+            ? "glass-panel bg-white/95 shadow-[0_8px_25px_rgba(249,115,22,0.1)] border border-orange-500/20"
+            : "bg-white/80 backdrop-blur-md border border-zinc-200/80 shadow-sm"
         }`}
       >
         {/* Brand Logo */}
@@ -116,18 +128,18 @@ export default function Navbar() {
               sound.playClick();
             }
           }}
-          className="flex items-center gap-2 group cursor-pointer"
+          className="flex items-center gap-1.5 sm:gap-2 group cursor-pointer"
           onMouseEnter={() => sound.playHover()}
         >
-          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-orange-500/15 to-amber-500/15 border border-orange-500/30 flex items-center justify-center group-hover:border-orange-500 transition-colors shadow-sm">
-            <Cpu className="w-4 h-4 text-orange-600 group-hover:scale-110 transition-transform" />
+          <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-gradient-to-br from-orange-500/15 to-amber-500/15 border border-orange-500/30 flex items-center justify-center group-hover:border-orange-500 transition-colors shadow-xs">
+            <Cpu className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-orange-600 group-hover:scale-110 transition-transform" />
           </div>
           <div className="flex flex-col">
-            <span className="font-mono text-sm tracking-wider font-extrabold text-zinc-900 group-hover:text-orange-600 transition-colors flex items-center gap-1.5">
+            <span className="font-mono text-xs sm:text-sm tracking-wider font-extrabold text-zinc-900 group-hover:text-orange-600 transition-colors flex items-center gap-1">
               SAMRIDH
               <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse" />
             </span>
-            <span className="text-[9px] font-mono text-zinc-400 tracking-wider hidden sm:block">AI/ML × DEV</span>
+            <span className="text-[8px] sm:text-[9px] font-mono text-zinc-400 tracking-wider hidden xs:block">AI/ML × DEV</span>
           </div>
         </Link>
 
@@ -145,7 +157,7 @@ export default function Navbar() {
                   handleLinkClick(link.href);
                 }}
                 onMouseEnter={() => sound.playHover()}
-                className={`relative px-3.5 py-1.5 text-xs font-semibold tracking-wide transition-colors rounded-full cursor-pointer ${
+                className={`relative px-3 py-1.5 text-xs font-semibold tracking-wide transition-colors rounded-full cursor-pointer ${
                   isActive
                     ? "text-orange-600"
                     : "text-zinc-600 hover:text-zinc-900"
@@ -163,7 +175,6 @@ export default function Navbar() {
             );
           })}
 
-          {/* Quick link between Home, Services & Hire Page */}
           {!isServicesPage && !isHirePage && (
             <Link
               href="/services"
@@ -197,12 +208,12 @@ export default function Navbar() {
           )}
         </div>
 
-        {/* Right Action Tools */}
-        <div className="flex items-center gap-2.5">
+        {/* Right Action Buttons */}
+        <div className="flex items-center gap-1.5 sm:gap-2.5">
           <button
             onClick={handleSoundToggle}
             title={isMuted ? "Unmute sound effects" : "Mute sound effects"}
-            className="p-2 rounded-full text-zinc-500 hover:text-orange-600 hover:bg-orange-50 border border-transparent hover:border-orange-200 transition-all cursor-pointer"
+            className="p-1.5 sm:p-2 rounded-full text-zinc-500 hover:text-orange-600 hover:bg-orange-50 border border-transparent hover:border-orange-200 transition-all cursor-pointer"
             aria-label="Toggle Sound Effects"
           >
             {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4 text-orange-500" />}
@@ -212,39 +223,48 @@ export default function Navbar() {
             href="/hire"
             onClick={() => sound.playClick()}
             onMouseEnter={() => sound.playHover()}
-            className="hidden sm:flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-semibold text-white bg-gradient-to-r from-orange-500 via-orange-600 to-amber-500 hover:from-orange-600 hover:to-amber-600 transition-all cursor-pointer shadow-[0_2px_12px_rgba(249,115,22,0.35)] hover:scale-105"
+            className="flex items-center gap-1 sm:gap-1.5 px-3 sm:px-4 py-1 sm:py-1.5 rounded-full text-[11px] sm:text-xs font-bold text-white bg-gradient-to-r from-orange-500 via-orange-600 to-amber-500 hover:from-orange-600 hover:to-amber-600 transition-all cursor-pointer shadow-[0_2px_10px_rgba(249,115,22,0.3)] hover:scale-105"
           >
             <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />
             <span>Hire Me</span>
           </Link>
 
-          {/* Mobile Menu Button */}
+          {/* Mobile Navigation Toggle Button */}
           <button
             onClick={() => {
               sound.playClick();
               setMobileMenuOpen(!mobileMenuOpen);
             }}
-            className="md:hidden p-2 rounded-xl text-zinc-600 hover:text-zinc-900 border border-zinc-200 hover:border-orange-300 bg-white shadow-sm transition-colors"
-            aria-label="Toggle navigation menu"
+            className="md:hidden p-1.5 sm:p-2 rounded-xl text-zinc-700 hover:text-zinc-900 border border-zinc-200 hover:border-orange-300 bg-white shadow-xs transition-colors cursor-pointer"
+            aria-label="Toggle Navigation Menu"
           >
             {mobileMenuOpen ? <X className="w-5 h-5 text-orange-600" /> : <Menu className="w-5 h-5" />}
           </button>
         </div>
       </nav>
 
-      {/* Mobile Drawer Menu */}
+      {/* Mobile Drawer Navigation overlay */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -15, scale: 0.98 }}
+            initial={{ opacity: 0, y: -10, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -15, scale: 0.98 }}
+            exit={{ opacity: 0, y: -10, scale: 0.96 }}
             transition={{ duration: 0.2 }}
-            className="pointer-events-auto absolute top-20 left-4 right-4 p-5 rounded-2xl bg-white/95 backdrop-blur-2xl border border-orange-500/25 shadow-[0_15px_35px_rgba(0,0,0,0.08)] flex flex-col gap-1.5 md:hidden"
+            className="pointer-events-auto fixed top-16 left-3 right-3 p-4 sm:p-5 rounded-3xl bg-white/98 backdrop-blur-2xl border border-orange-500/30 shadow-[0_20px_50px_rgba(0,0,0,0.15)] flex flex-col gap-1.5 md:hidden z-50 max-h-[85vh] overflow-y-auto"
           >
-            <div className="text-[10px] font-mono text-orange-600 font-semibold uppercase tracking-widest pb-2 mb-1 border-b border-zinc-100">
-              NAVIGATION // {isHirePage ? "HIRE & RESUME PORTAL" : isServicesPage ? "SERVICES PORTAL" : "SAMRIDH.OS"}
+            <div className="flex items-center justify-between pb-2 mb-1 border-b border-zinc-100">
+              <span className="text-[10px] font-mono text-orange-600 font-bold uppercase tracking-widest">
+                NAVIGATION MENU
+              </span>
+              <button
+                onClick={() => setMobileMenuOpen(false)}
+                className="p-1 rounded-full text-zinc-400 hover:text-zinc-600"
+              >
+                <X className="w-4 h-4" />
+              </button>
             </div>
+
             {currentNavLinks.map((link) => {
               const isHash = link.href.startsWith("#");
               const isActive = isHash && activeSection === link.href.substring(1);
@@ -256,9 +276,9 @@ export default function Navbar() {
                     e.preventDefault();
                     handleLinkClick(link.href);
                   }}
-                  className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-colors ${
+                  className={`flex items-center justify-between px-4 py-3 rounded-2xl text-sm font-semibold transition-all ${
                     isActive
-                      ? "text-orange-600 bg-orange-50 border border-orange-200/80"
+                      ? "text-orange-600 bg-orange-50 border border-orange-200 font-bold shadow-xs"
                       : "text-zinc-700 hover:text-zinc-900 hover:bg-zinc-50"
                   }`}
                 >
@@ -268,20 +288,23 @@ export default function Navbar() {
               );
             })}
 
-            <div className="pt-2 mt-1 border-t border-zinc-100 space-y-1.5">
+            <div className="pt-3 mt-1 border-t border-zinc-100 space-y-2">
               <Link
                 href="/hire"
                 onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-bold bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-sm"
+                className="flex items-center justify-between px-4 py-3 rounded-2xl text-sm font-bold bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-md"
               >
-                <span>Hire Me / Resume & GitHub</span>
+                <div className="flex items-center gap-2">
+                  <Briefcase className="w-4 h-4" />
+                  <span>Hire Me / Resume & Profile</span>
+                </div>
                 <ArrowUpRight className="w-4 h-4" />
               </Link>
               {!isServicesPage && (
                 <Link
                   href="/services"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-bold bg-orange-50 text-orange-700 border border-orange-200"
+                  className="flex items-center justify-between px-4 py-3 rounded-2xl text-sm font-bold bg-orange-50 text-orange-700 border border-orange-200"
                 >
                   <span>Explore Full Services Page</span>
                   <ArrowUpRight className="w-4 h-4" />
