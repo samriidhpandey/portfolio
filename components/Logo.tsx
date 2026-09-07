@@ -28,7 +28,7 @@ export default function Logo({
   className = "",
   withLink = false,
   animated = true,
-  companyName = "SAMRIDH",
+  companyName = "WEBSITE WALE",
   tagline = "AI/ML × FULL-STACK",
 }: LogoProps) {
   const currentSize = sizeMap[size] || sizeMap.sm;

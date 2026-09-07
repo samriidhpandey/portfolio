@@ -275,52 +275,10 @@ export default function AmbientBackground() {
       {/* HARDWARE-ACCELERATED ULTRA-SMOOTH (60 FPS) GLASS SHAPES                  */}
       {/* ========================================================================= */}
 
-      {/* 1. Top-Right Floating Frosted Glass Capsule (GPU Accelerated, Lightweight Glow) */}
-      <motion.div
-        animate={{
-          y: [0, -14, 0],
-          rotate: [0, 3, 0],
-        }}
-        transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-        className="fixed -top-[8%] -right-[6vw] w-[50vw] sm:w-[38vw] max-w-[500px] h-[55vh] pointer-events-none z-0 transform-gpu will-change-transform rounded-[40px] bg-gradient-to-br from-white/70 via-orange-100/25 to-amber-100/15 border border-white/80 shadow-[0_15px_40px_rgba(249,115,22,0.08)]"
-      >
-        <div className="absolute inset-0 rounded-[inherit] bg-gradient-to-tr from-transparent via-white/50 to-transparent opacity-80" />
-        <div className="absolute top-[15%] left-[20%] w-[50%] h-[50%] rounded-full bg-gradient-to-br from-orange-400/15 via-amber-300/10 to-transparent blur-xl" />
-      </motion.div>
-
-      {/* 2. Mid-Right 3D Floating Glass Pill */}
-      <motion.div
-        animate={{
-          y: [0, 16, 0],
-          rotate: [8, -5, 8],
-        }}
-        transition={{ duration: 14, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-        className="fixed top-[32%] right-[4%] w-[280px] sm:w-[360px] h-[140px] sm:h-[180px] rounded-3xl transform-gpu will-change-transform bg-gradient-to-br from-white/80 via-orange-50/35 to-amber-50/20 border border-white/90 shadow-[0_12px_32px_rgba(249,115,22,0.07)] pointer-events-none z-0"
-      >
-        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-white to-transparent opacity-90" />
-      </motion.div>
-
-      {/* 3. Top-Left Floating Glass Orb */}
-      <motion.div
-        animate={{
-          y: [0, -16, 0],
-          x: [0, -10, 0],
-        }}
-        transition={{ duration: 11, repeat: Infinity, ease: "easeInOut", delay: 1.5 }}
-        className="fixed top-[14%] left-[4%] w-[220px] h-[220px] rounded-full transform-gpu will-change-transform bg-gradient-to-tr from-white/70 via-orange-100/30 to-transparent border border-white/80 shadow-[0_10px_30px_rgba(249,115,22,0.06)] pointer-events-none z-0"
-      >
-        <div className="absolute top-5 left-5 w-12 h-12 rounded-full bg-orange-400/15 blur-md" />
-      </motion.div>
-
-      {/* 4. Bottom-Right Floating Glass Prism Panel */}
-      <motion.div
-        animate={{
-          y: [0, -16, 0],
-          rotate: [-10, 6, -10],
-        }}
-        transition={{ duration: 16, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-        className="fixed bottom-[12%] right-[6%] w-[240px] sm:w-[300px] h-[160px] sm:h-[200px] rounded-3xl transform-gpu will-change-transform bg-gradient-to-tl from-white/75 via-amber-50/30 to-orange-50/15 border border-white/85 shadow-[0_12px_35px_rgba(249,115,22,0.07)] pointer-events-none z-0"
-      />
+      {/* Subtle Ambient Radial Glowing Lights (No box borders, clean and spacious) */}
+      <div className="fixed -top-[10%] -right-[5vw] w-[500px] h-[500px] rounded-full bg-gradient-to-br from-orange-400/10 via-amber-300/5 to-transparent blur-3xl pointer-events-none z-0 transform-gpu" />
+      <div className="fixed top-[30%] -left-[5vw] w-[400px] h-[400px] rounded-full bg-gradient-to-tr from-orange-300/10 via-amber-200/5 to-transparent blur-3xl pointer-events-none z-0 transform-gpu" />
+      <div className="fixed bottom-[10%] right-[10vw] w-[450px] h-[450px] rounded-full bg-gradient-to-tl from-amber-400/10 via-orange-300/5 to-transparent blur-3xl pointer-events-none z-0 transform-gpu" />
 
       {/* 5. Concentric Tech Orbital Rings (CSS GPU Accelerated) */}
       <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full border border-orange-500/10 animate-spin [animation-duration:80s] opacity-35 pointer-events-none z-0 transform-gpu" />

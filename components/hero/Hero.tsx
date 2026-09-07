@@ -21,69 +21,14 @@ export default function Hero() {
       className="relative min-h-screen flex flex-col justify-between pt-32 pb-16 px-4 sm:px-6 lg:px-8 overflow-hidden"
     >
       {/* Main Centered High-Impact Presentation */}
-      <div className="max-w-5xl mx-auto w-full flex flex-col items-center text-center my-auto z-10 relative">
+      <div className="max-w-4xl mx-auto w-full flex flex-col items-center text-center my-auto z-10 relative">
         
-        {/* Floating Creative Micro-Card 1 (Top Left - Web Development) */}
-        <motion.div
-          animate={{ y: [0, -12, 0] }}
-          transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
-          className="hidden xl:flex items-center gap-3 px-4 py-2.5 rounded-2xl bg-white/95 backdrop-blur-xl border border-orange-500/30 shadow-[0_10px_30px_rgba(249,115,22,0.12)] absolute -top-4 -left-12 z-20 pointer-events-none hover:scale-105 transition-transform"
-        >
-          <div className="w-8 h-8 rounded-xl bg-orange-50 border border-orange-200 flex items-center justify-center text-orange-600 shadow-xs">
-            <Zap className="w-4 h-4" />
-          </div>
-          <div className="text-left font-mono">
-            <span className="text-[10px] text-zinc-400 block font-bold uppercase">PAGE SPEED</span>
-            <span className="text-xs font-black text-zinc-900">100/100 // Next.js</span>
-          </div>
-        </motion.div>
-
-        {/* Floating Creative Micro-Card 2 (Top Right - Marketing & ROI) */}
-        <motion.div
-          animate={{ y: [0, 14, 0] }}
-          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-          className="hidden xl:flex items-center gap-3 px-4 py-2.5 rounded-2xl bg-white/95 backdrop-blur-xl border border-orange-500/30 shadow-[0_10px_30px_rgba(249,115,22,0.12)] absolute -top-4 -right-12 z-20 pointer-events-none hover:scale-105 transition-transform"
-        >
-          <div className="w-8 h-8 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-600 shadow-xs">
-            <TrendingUp className="w-4 h-4" />
-          </div>
-          <div className="text-left font-mono">
-            <span className="text-[10px] text-zinc-400 block font-bold uppercase">MARKETING ROAS</span>
-            <span className="text-xs font-black text-orange-600">+350% Client Growth</span>
-          </div>
-        </motion.div>
-
-        {/* Floating Creative Micro-Card 3 (Mid Left - AI Automation) */}
-        <motion.div
-          animate={{ y: [0, -10, 0] }}
-          transition={{ duration: 4.8, repeat: Infinity, ease: "easeInOut", delay: 1.5 }}
-          className="hidden lg:flex items-center gap-2.5 px-3.5 py-2 rounded-2xl bg-white/90 backdrop-blur-md border border-orange-200 shadow-[0_8px_20px_rgba(0,0,0,0.06)] absolute top-1/2 -left-20 z-20 pointer-events-none"
-        >
-          <div className="w-2 h-2 rounded-full bg-orange-500 animate-ping" />
-          <span className="text-xs font-mono font-bold text-zinc-800 flex items-center gap-1.5">
-            <Bot className="w-3.5 h-3.5 text-orange-600" />
-            24/7 AI Smart Bot
-          </span>
-        </motion.div>
-
-        {/* Floating Creative Micro-Card 4 (Mid Right - Client Trust) */}
-        <motion.div
-          animate={{ y: [0, 10, 0] }}
-          transition={{ duration: 5.2, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-          className="hidden lg:flex items-center gap-2.5 px-3.5 py-2 rounded-2xl bg-white/90 backdrop-blur-md border border-orange-200 shadow-[0_8px_20px_rgba(0,0,0,0.06)] absolute top-1/2 -right-20 z-20 pointer-events-none"
-        >
-          <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
-          <span className="text-xs font-mono font-bold text-zinc-800">
-            28+ Delivered Projects
-          </span>
-        </motion.div>
-
         {/* Availability Badge */}
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full border border-orange-500/35 bg-white/95 backdrop-blur-md mb-8 shadow-sm"
+          className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full border border-orange-500/30 bg-white/95 backdrop-blur-md mb-8 shadow-xs"
         >
           <span className="relative flex h-2.5 w-2.5">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-500 opacity-75" />
