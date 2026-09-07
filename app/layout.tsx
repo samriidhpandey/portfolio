@@ -42,6 +42,8 @@ export const metadata: Metadata = {
   }
 };
 
+import AmbientBackground from "@/components/AmbientBackground";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -52,7 +54,8 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} scroll-smooth antialiased`}
     >
-      <body className="min-h-screen bg-[#FAFAFB] text-zinc-900 font-sans selection:bg-orange-500/20 selection:text-orange-700">
+      <body className="min-h-screen bg-[#FAFAFB] text-zinc-900 font-sans selection:bg-orange-500/20 selection:text-orange-700 relative">
+        <AmbientBackground />
         {children}
       </body>
     </html>

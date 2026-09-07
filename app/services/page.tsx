@@ -4,7 +4,6 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import SmoothScroll from "@/components/SmoothScroll";
 import Navbar from "@/components/Navbar";
-import AmbientBackground from "@/components/AmbientBackground";
 import ServiceDeepDive from "@/components/services/ServiceDeepDive";
 import ToolStackMatrix from "@/components/services/ToolStackMatrix";
 import ProjectEstimator from "@/components/services/ProjectEstimator";
@@ -26,14 +25,8 @@ export default function ServicesPage() {
 
   return (
     <SmoothScroll>
-      <div className="relative min-h-screen bg-[#FAFAFB] text-zinc-900 selection:bg-orange-500/20 selection:text-orange-700">
+      <div className="relative min-h-screen text-zinc-900 selection:bg-orange-500/20 selection:text-orange-700">
         
-        {/* Dynamic Animated Ambient Glows & Floating Particles */}
-        <AmbientBackground />
-
-        {/* Ambient Subtle Grid Overlay */}
-        <div className="fixed inset-0 friendly-grid opacity-25 pointer-events-none -z-20" />
-
         {/* Persistent Smart Navbar */}
         <Navbar />
 

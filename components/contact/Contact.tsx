@@ -2,10 +2,9 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Mail, FileText, Send, CheckCircle, Copy, ArrowUpRight, Sparkles } from "lucide-react";
+import { Mail, FileText, Send, CheckCircle, Copy, ArrowUpRight, Sparkles, MapPin } from "lucide-react";
 import { GithubIcon, LinkedinIcon } from "@/components/icons";
 import confetti from "canvas-confetti";
-import { profileData } from "@/data/profile";
 import { sound } from "@/lib/audio";
 
 export default function Contact() {
@@ -19,7 +18,6 @@ export default function Contact() {
   const [isSent, setIsSent] = useState(false);
   const [copiedField, setCopiedField] = useState<string | null>(null);
 
-  // Listen for service selection from the Services section
   useState(() => {
     if (typeof window !== "undefined") {
       const handleSelect = (e: CustomEvent) => {
@@ -49,7 +47,6 @@ export default function Contact() {
     sound.playClick();
     setIsSubmitting(true);
 
-    // Simulate reliable dispatch
     setTimeout(() => {
       setIsSubmitting(false);
       setIsSent(true);
@@ -305,6 +302,31 @@ export default function Contact() {
               </form>
             )}
           </div>
+        </div>
+      </div>
+
+      {/* Interactive Google Location Map Widget */}
+      <div className="mt-12 glass-card p-4 sm:p-6 rounded-3xl bg-white border border-zinc-200 shadow-sm max-w-5xl mx-auto space-y-4">
+        <div className="flex flex-wrap items-center justify-between gap-2 font-mono text-xs">
+          <div className="flex items-center gap-2">
+            <MapPin className="w-4 h-4 text-orange-600" />
+            <span className="font-bold text-zinc-900 uppercase">OFFICE & GLOBAL REMOTE LOCATION</span>
+          </div>
+          <span className="text-zinc-500 text-[11px] sm:text-xs">India • Global Remote (IST / UTC+5:30)</span>
+        </div>
+
+        <div className="w-full h-[260px] sm:h-[320px] rounded-2xl overflow-hidden border border-zinc-200 relative shadow-inner">
+          <iframe
+            title="Office Location Map"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3559.8773449339396!2d80.946166!3d26.846708!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x399bfd991f32b16b%3A0x93ccba8909978be7!2sLucknow%2C%20Uttar%20Pradesh!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
+            width="100%"
+            height="100%"
+            style={{ border: 0 }}
+            allowFullScreen={false}
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+            className="w-full h-full filter saturate-[0.9] contrast-[1.02]"
+          />
         </div>
       </div>
     </section>

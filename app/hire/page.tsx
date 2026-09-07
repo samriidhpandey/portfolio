@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import SmoothScroll from "@/components/SmoothScroll";
 import Navbar from "@/components/Navbar";
-import AmbientBackground from "@/components/AmbientBackground";
 import ResumeViewer from "@/components/hire/ResumeViewer";
 import GitHubOutlet from "@/components/hire/GitHubOutlet";
 import LinkedInOutlet from "@/components/hire/LinkedInOutlet";
@@ -41,14 +40,8 @@ export default function HirePage() {
 
   return (
     <SmoothScroll>
-      <div className="relative min-h-screen bg-[#FAFAFB] text-zinc-900 selection:bg-orange-500/20 selection:text-orange-700">
+      <div className="relative min-h-screen text-zinc-900 selection:bg-orange-500/20 selection:text-orange-700">
         
-        {/* Dynamic Animated Ambient Glows & Particles */}
-        <AmbientBackground />
-
-        {/* Ambient Grid Overlay */}
-        <div className="fixed inset-0 friendly-grid opacity-25 pointer-events-none -z-20" />
-
         {/* Smart Navbar */}
         <Navbar />
 

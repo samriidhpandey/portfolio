@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 import { ArrowRight, Sparkles, Terminal, Activity, ShieldCheck, ChevronDown, CheckCircle2, TrendingUp, Globe, Briefcase, Zap, Bot, Star } from "lucide-react";
 import { profileData } from "@/data/profile";
 import { sound } from "@/lib/audio";
-import CreativeGlowBackground from "./CreativeGlowBackground";
 import Link from "next/link";
 
 export default function Hero() {
@@ -21,9 +20,6 @@ export default function Hero() {
       id="home"
       className="relative min-h-screen flex flex-col justify-between pt-32 pb-16 px-4 sm:px-6 lg:px-8 overflow-hidden"
     >
-      {/* Creative Dynamic Glowing Background with Floating Particles, Sine Waves & Ambient Orbs */}
-      <CreativeGlowBackground />
-
       {/* Main Centered High-Impact Presentation */}
       <div className="max-w-5xl mx-auto w-full flex flex-col items-center text-center my-auto z-10 relative">
         
