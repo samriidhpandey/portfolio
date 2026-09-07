@@ -297,6 +297,7 @@ export default function AdminPage() {
 
     setProjects(updatedList);
     localStorage.setItem("admin_projects", JSON.stringify(updatedList));
+    window.dispatchEvent(new Event("admin-projects-updated"));
     setShowProjectModal(false);
     sound.playSuccess();
   };
@@ -306,6 +307,7 @@ export default function AdminPage() {
     const updated = projects.filter((p) => p.id !== id);
     setProjects(updated);
     localStorage.setItem("admin_projects", JSON.stringify(updated));
+    window.dispatchEvent(new Event("admin-projects-updated"));
   };
 
   // Profile Save Handler

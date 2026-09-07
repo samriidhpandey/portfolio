@@ -12,6 +12,15 @@ interface ProjectCardProps {
   onOpenCaseStudy: (project: ProjectItem) => void;
 }
 
+const formatExternalUrl = (url?: string) => {
+  if (!url) return "#";
+  const trimmed = url.trim();
+  if (trimmed.startsWith("http://") || trimmed.startsWith("https://") || trimmed.startsWith("//")) {
+    return trimmed;
+  }
+  return `https://${trimmed}`;
+};
+
 export default function ProjectCard({ project, onOpenCaseStudy }: ProjectCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const [rotateX, setRotateX] = useState(0);
@@ -39,6 +48,8 @@ export default function ProjectCard({ project, onOpenCaseStudy }: ProjectCardPro
     setIsHovered(false);
   };
 
+  const primaryMetric = project.metrics && project.metrics.length > 0 ? project.metrics[0] : null;
+
   return (
     <motion.div
       ref={cardRef}
@@ -62,7 +73,7 @@ export default function ProjectCard({ project, onOpenCaseStudy }: ProjectCardPro
         {/* Ambient Project Glow */}
         <div
           className="absolute w-44 h-44 rounded-full blur-3xl opacity-25 group-hover:opacity-40 transition-opacity pointer-events-none"
-          style={{ backgroundColor: project.accentColor }}
+          style={{ backgroundColor: project.accentColor || "#FF6B00" }}
         />
 
         {/* Dynamic Architectural Visual Hologram */}
@@ -70,10 +81,10 @@ export default function ProjectCard({ project, onOpenCaseStudy }: ProjectCardPro
           <div
             className="w-14 h-14 rounded-2xl border flex items-center justify-center mb-3 shadow-md group-hover:scale-110 transition-transform duration-300 bg-white"
             style={{
-              borderColor: `${project.accentColor}50`
+              borderColor: `${project.accentColor || "#FF6B00"}50`
             }}
           >
-            <Cpu className="w-7 h-7" style={{ color: project.accentColor }} />
+            <Cpu className="w-7 h-7" style={{ color: project.accentColor || "#FF6B00" }} />
           </div>
 
           <span className="text-xs font-mono font-bold tracking-widest text-zinc-500 uppercase">
@@ -89,12 +100,14 @@ export default function ProjectCard({ project, onOpenCaseStudy }: ProjectCardPro
         </div>
 
         {/* Key metric badge */}
-        <div className="absolute top-4 right-4 z-10">
-          <span className="px-3 py-1 rounded-full text-[10px] font-mono tracking-wider font-semibold bg-orange-50/90 backdrop-blur-md border border-orange-200 text-orange-700 flex items-center gap-1.5 shadow-xs">
-            <Activity className="w-3 h-3 text-orange-500" />
-            {project.metrics[0].label}: {project.metrics[0].value}
-          </span>
-        </div>
+        {primaryMetric && (
+          <div className="absolute top-4 right-4 z-10">
+            <span className="px-3 py-1 rounded-full text-[10px] font-mono tracking-wider font-semibold bg-orange-50/90 backdrop-blur-md border border-orange-200 text-orange-700 flex items-center gap-1.5 shadow-xs">
+              <Activity className="w-3 h-3 text-orange-500" />
+              {primaryMetric.label}: {primaryMetric.value}
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Card Content */}
@@ -105,7 +118,7 @@ export default function ProjectCard({ project, onOpenCaseStudy }: ProjectCardPro
               {project.title}
             </h3>
             <span className="text-xs font-mono font-medium text-zinc-400">
-              SYS-0{project.id.length % 9}
+              SYS-0{((project.id || "").length % 9) || 1}
             </span>
           </div>
 
@@ -115,7 +128,7 @@ export default function ProjectCard({ project, onOpenCaseStudy }: ProjectCardPro
 
           {/* Tech tags */}
           <div className="flex flex-wrap gap-1.5 mb-6">
-            {project.technologies.slice(0, 5).map((tech) => (
+            {(project.technologies || []).slice(0, 5).map((tech) => (
               <span
                 key={tech}
                 className="px-2.5 py-1 rounded-lg bg-zinc-100 border border-zinc-200 text-[11px] font-mono font-medium text-zinc-700 group-hover:border-orange-200 transition-colors shadow-xs"
@@ -123,9 +136,9 @@ export default function ProjectCard({ project, onOpenCaseStudy }: ProjectCardPro
                 {tech}
               </span>
             ))}
-            {project.technologies.length > 5 && (
+            {(project.technologies || []).length > 5 && (
               <span className="px-2 py-1 rounded-lg bg-zinc-100 text-[10px] font-mono text-zinc-500 font-medium">
-                +{project.technologies.length - 5}
+                +{(project.technologies || []).length - 5}
               </span>
             )}
           </div>
@@ -148,20 +161,22 @@ export default function ProjectCard({ project, onOpenCaseStudy }: ProjectCardPro
           </button>
 
           <div className="flex items-center gap-2 relative z-20">
-            <a
-              href={project.githubUrl}
-              target="_blank"
-              rel="noreferrer"
-              title="View Repository"
-              onMouseEnter={() => sound.playHover()}
-              className="p-2 rounded-xl bg-zinc-100 hover:bg-orange-50 text-zinc-600 hover:text-orange-600 border border-zinc-200 hover:border-orange-200 transition-colors cursor-pointer pointer-events-auto shadow-xs"
-            >
-              <GithubIcon className="w-4 h-4" />
-            </a>
+            {project.githubUrl && (
+              <a
+                href={formatExternalUrl(project.githubUrl)}
+                target="_blank"
+                rel="noreferrer"
+                title="View Repository"
+                onMouseEnter={() => sound.playHover()}
+                className="p-2 rounded-xl bg-zinc-100 hover:bg-orange-50 text-zinc-600 hover:text-orange-600 border border-zinc-200 hover:border-orange-200 transition-colors cursor-pointer pointer-events-auto shadow-xs"
+              >
+                <GithubIcon className="w-4 h-4" />
+              </a>
+            )}
 
             {project.demoUrl && (
               <a
-                href={project.demoUrl}
+                href={formatExternalUrl(project.demoUrl)}
                 target="_blank"
                 rel="noreferrer"
                 title="Launch Live Preview"

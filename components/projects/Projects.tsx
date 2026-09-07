@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { projectsData, projectCategories, ProjectItem } from "@/data/projects";
 import ProjectCard from "./ProjectCard";
@@ -10,8 +10,40 @@ import { sound } from "@/lib/audio";
 export default function Projects() {
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [activeModalProject, setActiveModalProject] = useState<ProjectItem | null>(null);
+  const [allProjects, setAllProjects] = useState<ProjectItem[]>(projectsData);
 
-  const filteredProjects = projectsData.filter((p) => {
+  const loadProjects = () => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("admin_projects");
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setAllProjects(parsed);
+            return;
+          }
+        } catch (e) {}
+      }
+      setAllProjects(projectsData);
+    }
+  };
+
+  useEffect(() => {
+    loadProjects();
+
+    const handleUpdate = () => {
+      loadProjects();
+    };
+
+    window.addEventListener("admin-projects-updated", handleUpdate);
+    window.addEventListener("storage", handleUpdate);
+    return () => {
+      window.removeEventListener("admin-projects-updated", handleUpdate);
+      window.removeEventListener("storage", handleUpdate);
+    };
+  }, []);
+
+  const filteredProjects = allProjects.filter((p) => {
     if (selectedCategory === "All") return true;
     return p.category === selectedCategory;
   });
@@ -28,7 +60,7 @@ export default function Projects() {
           Selected Work
         </h2>
         <p className="text-zinc-600 mt-2 text-sm sm:text-base max-w-2xl font-normal">
-          Systems I’ve designed, built, and experimented with.
+          Systems & products I’ve designed, built, and launched.
         </p>
       </div>
 
