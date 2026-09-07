@@ -58,6 +58,15 @@ export default function Footer() {
             Services & Tool Stack →
           </Link>
           <span className="text-zinc-300">|</span>
+          <Link
+            href="/admin"
+            onClick={() => sound.playClick()}
+            className="text-zinc-700 hover:text-orange-600 font-bold hover:underline flex items-center gap-1"
+          >
+            <ShieldCheck className="w-3.5 h-3.5 text-orange-500" />
+            <span>Admin Portal</span>
+          </Link>
+          <span className="text-zinc-300">|</span>
           <div className="flex items-center gap-1.5 text-zinc-600 font-semibold">
             <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
             <span>STATUS: AVAILABLE</span>

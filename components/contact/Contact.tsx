@@ -47,6 +47,27 @@ export default function Contact() {
     sound.playClick();
     setIsSubmitting(true);
 
+    // Save to Admin Panel Messages Store
+    try {
+      const newMsg = {
+        id: `msg-${Date.now()}`,
+        name: formData.name,
+        email: formData.email,
+        projectType: formData.projectType,
+        message: formData.message,
+        date: new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" }) + ", Today",
+        unread: true
+      };
+
+      const existing = localStorage.getItem("admin_contact_messages");
+      let list = [];
+      if (existing) {
+        try { list = JSON.parse(existing); } catch (err) {}
+      }
+      list.unshift(newMsg);
+      localStorage.setItem("admin_contact_messages", JSON.stringify(list));
+    } catch (err) {}
+
     setTimeout(() => {
       setIsSubmitting(false);
       setIsSent(true);
