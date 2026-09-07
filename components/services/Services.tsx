@@ -25,7 +25,7 @@ export default function Services() {
         </p>
       </div>
 
-      {/* Business Growth Transformation Banner (Rounded Card Container without Logo) */}
+      {/* Business Growth Transformation Banner (Clean Clickable Card without Box Overlays) */}
       <motion.div
         initial={{ opacity: 0, y: 25 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -34,38 +34,26 @@ export default function Services() {
         className="relative w-full rounded-3xl overflow-hidden border border-orange-500/25 shadow-2xl group bg-white"
       >
         {/* High-Resolution Graphic without Logo */}
-        <div className="relative w-full aspect-[16/9] sm:aspect-[16/8.8] overflow-hidden bg-zinc-50">
+        <Link
+          href="/services"
+          onClick={() => sound.playClick()}
+          onMouseEnter={() => sound.playHover()}
+          className="relative block w-full aspect-[16/9] sm:aspect-[16/8.8] overflow-hidden bg-zinc-50 cursor-pointer"
+        >
           <img
             src="/growth-banner-no-logo.jpg"
             alt="Business Growth Banner - 3D Rocket and Bar Chart Roadmap"
             className="w-full h-full object-cover object-center group-hover:scale-[1.01] transition-transform duration-700 ease-out"
           />
 
-          {/* Interactive Hotspot directly on the 'Let's Grow Your Business' button */}
-          <Link
-            href="/services"
-            onClick={() => sound.playClick()}
-            onMouseEnter={() => sound.playHover()}
-            className="absolute left-[6%] bottom-[33%] sm:bottom-[34%] w-[38%] sm:w-[32%] h-[15%] sm:h-[16%] max-w-[420px] rounded-2xl bg-transparent hover:bg-orange-500/20 border-2 border-orange-500/0 hover:border-orange-500 transition-all cursor-pointer flex items-center justify-center group/btn shadow-lg z-20"
-            title="Let's Grow Your Business - View Full Services Page"
-          >
-            <span className="sr-only">Let's Grow Your Business - View Full Services Page</span>
-            <span className="absolute inset-0 rounded-2xl ring-2 ring-orange-500/50 animate-pulse pointer-events-none" />
-          </Link>
-
           {/* Top Right Services Portal Badge */}
           <div className="absolute top-4 sm:top-6 right-4 sm:right-6 flex items-center gap-2 z-20">
-            <Link
-              href="/services"
-              onClick={() => sound.playClick()}
-              onMouseEnter={() => sound.playHover()}
-              className="px-4 py-2 rounded-xl bg-white/95 hover:bg-orange-50 backdrop-blur-md border border-orange-500/30 text-zinc-900 hover:text-orange-600 font-bold text-xs font-mono shadow-md transition-all flex items-center gap-1.5 cursor-pointer hover:scale-105"
-            >
+            <span className="px-4 py-2 rounded-xl bg-white/95 group-hover:bg-orange-50 backdrop-blur-md border border-orange-500/30 text-zinc-900 group-hover:text-orange-600 font-bold text-xs font-mono shadow-md transition-all flex items-center gap-1.5 cursor-pointer">
               <span>Explore Services Page</span>
-              <ArrowRight className="w-3.5 h-3.5 text-orange-500" />
-            </Link>
+              <ArrowRight className="w-3.5 h-3.5 text-orange-500 group-hover:translate-x-1 transition-transform" />
+            </span>
           </div>
-        </div>
+        </Link>
 
         {/* Bottom Quick-Action Bar */}
         <div className="p-4 sm:p-6 bg-gradient-to-r from-orange-50 via-white to-amber-50 border-t border-orange-200/80 flex flex-wrap items-center justify-between gap-4">
