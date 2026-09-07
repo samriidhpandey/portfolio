@@ -66,7 +66,7 @@ export default function ProjectCard({ project, onOpenCaseStudy }: ProjectCardPro
       className="group relative rounded-2xl glass-card bg-white overflow-hidden flex flex-col justify-between border border-zinc-200/80 hover:border-orange-400 shadow-sm hover:shadow-lg transition-all duration-300"
     >
       {/* Top Banner / Real Website Screen Preview Showcase */}
-      <div className="relative h-56 sm:h-64 w-full overflow-hidden bg-gradient-to-b from-orange-50/60 via-zinc-100/50 to-white border-b border-zinc-200/80 flex items-center justify-center p-3 sm:p-4 group/preview">
+      <div className="relative h-64 sm:h-72 w-full overflow-hidden bg-gradient-to-b from-orange-50/60 via-zinc-100/50 to-white border-b border-zinc-200/80 flex items-center justify-center p-3 sm:p-4 group/preview">
         {/* Subtle background grid */}
         <div className="absolute inset-0 friendly-grid opacity-30 group-hover/preview:opacity-60 transition-opacity" />
 
@@ -118,14 +118,19 @@ export default function ProjectCard({ project, onOpenCaseStudy }: ProjectCardPro
             </div>
           </div>
 
-          {/* Browser Screen Body (Real Website Image or Clean Light Interface) */}
-          <div className="relative w-full flex-1 overflow-hidden bg-zinc-50 flex items-center justify-center">
+          {/* Browser Screen Body (Real Website Long Page Image with Smooth Auto-Scroll on Hover) */}
+          <div className="relative w-full flex-1 overflow-hidden bg-zinc-100 flex items-start justify-center group/screen">
             {project.image ? (
-              <img
-                src={project.image}
-                alt={project.title}
-                className="w-full h-full object-cover object-top group-hover/preview:scale-105 transition-transform duration-500"
-              />
+              <div className="w-full h-full overflow-hidden relative">
+                <img
+                  src={project.image}
+                  alt={project.title}
+                  className="w-full h-auto object-cover object-top transition-transform duration-[4500ms] ease-in-out group-hover/screen:-translate-y-[calc(100%-100%)] group-hover/preview:-translate-y-[calc(100%-200px)] select-none will-change-transform"
+                  style={{
+                    minHeight: "100%",
+                  }}
+                />
+              </div>
             ) : (
               /* Clean light website header mockup fallback */
               <div className="w-full h-full p-4 flex flex-col justify-between bg-gradient-to-br from-orange-50/40 via-white to-orange-50/20 relative">
@@ -165,10 +170,10 @@ export default function ProjectCard({ project, onOpenCaseStudy }: ProjectCardPro
               </div>
             )}
 
-            {/* Hover overlay hint */}
-            <div className="absolute inset-0 bg-zinc-900/40 opacity-0 group-hover/preview:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[2px]">
-              <span className="px-3.5 py-2 rounded-xl bg-orange-500 text-white font-mono text-xs font-bold shadow-lg flex items-center gap-1.5 transform translate-y-2 group-hover/preview:translate-y-0 transition-transform">
-                <ArrowUpRight className="w-4 h-4" /> Open Live Website
+            {/* Hover preview pill hint */}
+            <div className="absolute bottom-2.5 right-2.5 opacity-0 group-hover/preview:opacity-100 transition-opacity flex items-center justify-center pointer-events-none z-20">
+              <span className="px-3 py-1.5 rounded-lg bg-orange-600/90 text-white font-mono text-[10px] font-bold shadow-md flex items-center gap-1.5 backdrop-blur-xs">
+                <ArrowUpRight className="w-3.5 h-3.5" /> Auto-Scrolling Preview
               </span>
             </div>
           </div>

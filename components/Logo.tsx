@@ -37,23 +37,23 @@ export default function Logo({
     <motion.div
       whileHover={animated ? { scale: 1.08, y: -1 } : undefined}
       whileTap={animated ? { scale: 0.95 } : undefined}
-      className={`relative ${currentSize.box} rounded-2xl bg-[#090C14] border border-orange-500/40 shadow-[0_4px_18px_rgba(255,107,0,0.25)] flex items-center justify-center p-0.5 overflow-hidden transition-all duration-300 group-hover:border-orange-400 group-hover:shadow-[0_0_22px_rgba(255,107,0,0.55)] ${className}`}
+      className={`relative ${currentSize.box} rounded-2xl bg-white border border-orange-500/25 shadow-[0_2px_12px_rgba(255,107,0,0.15)] flex items-center justify-center p-1 overflow-hidden transition-all duration-300 group-hover:border-orange-500 group-hover:shadow-[0_0_18px_rgba(255,107,0,0.3)] ${className}`}
     >
-      {/* Background Radial Glow */}
-      <div className="absolute inset-0 bg-radial from-orange-500/20 via-transparent to-transparent opacity-80 pointer-events-none" />
+      {/* Background Soft Orange Radial Glow */}
+      <div className="absolute inset-0 bg-radial from-orange-500/10 via-amber-500/5 to-transparent opacity-80 pointer-events-none" />
 
-      {/* Stock Market Bull Orange & White Graphic */}
+      {/* Stock Market Bull Orange Graphic (Zero black background) */}
       <img
-        src="/bull-logo-orange-animated.gif"
-        alt="Samridh Bull Logo"
-        className="w-full h-full object-cover rounded-[14px] select-none transform-gpu drop-shadow-[0_2px_8px_rgba(255,107,0,0.4)] group-hover:scale-105 transition-transform"
+        src="/bull-icon-clean.png"
+        alt="Website Wale Bull Logo"
+        className="w-full h-full object-contain select-none transform-gpu drop-shadow-[0_1px_4px_rgba(255,107,0,0.3)] group-hover:scale-105 transition-transform"
       />
 
-      {/* Live Market Orange Pulse Beacon */}
+      {/* Live Market Pulse Indicator */}
       {animated && (
-        <span className="absolute top-1 right-1 flex h-2 w-2 pointer-events-none">
+        <span className="absolute top-1 right-1 flex h-1.5 w-1.5 pointer-events-none">
           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75" />
-          <span className="relative inline-flex rounded-full h-2 w-2 bg-orange-500 shadow-[0_0_6px_rgba(255,107,0,0.9)]" />
+          <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-orange-500" />
         </span>
       )}
     </motion.div>
@@ -74,15 +74,11 @@ export default function Logo({
     <div className={`inline-flex items-center gap-2.5 sm:gap-3 group cursor-pointer ${className}`}>
       {BullBadge}
       <div className="flex flex-col text-left">
-        <div className="flex items-center gap-1.5 leading-none">
+        <div className="flex items-center leading-none">
           <span
-            className={`font-mono ${currentSize.text} tracking-wider font-black text-zinc-900 group-hover:text-orange-600 transition-colors flex items-center gap-1`}
+            className={`font-mono ${currentSize.text} tracking-wider font-black text-zinc-900 group-hover:text-orange-600 transition-colors flex items-center gap-1.5`}
           >
             {companyName}
-          </span>
-          <span className="px-1.5 py-0.5 rounded-md bg-orange-50 text-orange-700 font-mono text-[8px] sm:text-[9px] font-black border border-orange-300/80 shadow-xs flex items-center gap-0.5">
-            <span className="text-[10px] leading-none text-orange-600 font-bold">▲</span>
-            <span>BULL</span>
           </span>
         </div>
         <span

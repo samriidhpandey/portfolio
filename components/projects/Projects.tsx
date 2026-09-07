@@ -61,13 +61,13 @@ export default function Projects() {
       <div className="flex flex-col items-start mb-12">
         <div className="flex items-center gap-2 font-mono text-xs text-orange-600 font-bold tracking-widest uppercase mb-3">
           <span className="w-6 h-px bg-orange-500" />
-          <span>03 // PORTFOLIO SHOWCASE</span>
+          <span>03 // WORK SAMPLES & PORTFOLIO</span>
         </div>
-        <h2 className="text-3xl sm:text-5xl font-extrabold text-zinc-900 tracking-tight">
-          Selected Work
+        <h2 className="text-3xl sm:text-5xl font-black text-zinc-900 tracking-tight">
+          Work Samples!
         </h2>
-        <p className="text-zinc-600 mt-2 text-sm sm:text-base max-w-2xl font-normal">
-          Systems & products I’ve designed, built, and launched.
+        <p className="text-zinc-600 mt-2 text-sm sm:text-base max-w-2xl font-normal flex items-center gap-2">
+          <span>High-impact client websites & production platforms. Hover over any website card to auto-scroll full page preview.</span>
         </p>
       </div>
 
