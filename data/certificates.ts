@@ -5,11 +5,28 @@ export interface CertificateItem {
   issueDate: string;
   credentialId?: string;
   verifyUrl?: string;
-  category: "Full Stack" | "AI / ML" | "Cloud & DevOps" | "Data Science";
-  skills: string[];
-  description: string;
-  accentColor: string;
-  badge: string;
+  category?: "Full Stack" | "AI / ML" | "Cloud & DevOps" | "Data Science" | string;
+  skills?: string[];
+  description?: string;
+  accentColor?: string;
+  badge?: string;
+  image?: string;
+  linkedinUrl?: string;
+  linkedinPostId?: string;
+}
+
+export function formatLinkedInUrl(input: string): string {
+  if (!input) return "https://www.linkedin.com";
+  const trimmed = input.trim();
+  if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
+    return trimmed;
+  }
+  if (trimmed.startsWith("urn:li:")) {
+    return `https://www.linkedin.com/feed/update/${trimmed}`;
+  }
+  // Check if purely numeric or alphanumeric post ID
+  const cleanId = trimmed.replace(/[^a-zA-Z0-9_-]/g, "");
+  return `https://www.linkedin.com/feed/update/urn:li:activity:${cleanId}`;
 }
 
 export const certificatesData: CertificateItem[] = [
@@ -24,7 +41,9 @@ export const certificatesData: CertificateItem[] = [
     skills: ["Neural Networks", "CNNs", "RNNs", "Transformers", "PyTorch"],
     description: "Mastery of neural network architectures, hyperparameter tuning, sequence models, and attention mechanisms taught by Andrew Ng.",
     accentColor: "#FF6B00",
-    badge: "Specialization"
+    badge: "Specialization",
+    linkedinUrl: "https://www.linkedin.com",
+    image: ""
   },
   {
     id: "cert-2",
@@ -37,7 +56,9 @@ export const certificatesData: CertificateItem[] = [
     skills: ["React 19", "Next.js", "Node.js", "Django", "SQL & REST APIs"],
     description: "Industry-standard full-stack web application development, responsive UI design, databases, security, and CI/CD pipelines.",
     accentColor: "#0284C7",
-    badge: "Professional Certificate"
+    badge: "Professional Certificate",
+    linkedinUrl: "https://www.linkedin.com",
+    image: ""
   },
   {
     id: "cert-3",
@@ -50,45 +71,8 @@ export const certificatesData: CertificateItem[] = [
     skills: ["Cloud Architecture", "EC2 & S3", "Lambda", "Docker", "Security"],
     description: "Architecting secure, cost-optimized, resilient, and high-performance cloud infrastructure for distributed web and AI applications.",
     accentColor: "#F59E0B",
-    badge: "Associate Certification"
-  },
-  {
-    id: "cert-4",
-    title: "Machine Learning Engineering for Production (MLOps)",
-    issuer: "DeepLearning.AI",
-    issueDate: "2024",
-    credentialId: "MLOPS-PR-33104",
-    verifyUrl: "https://coursera.org",
-    category: "AI / ML",
-    skills: ["Model Serving", "Data Pipelines", "Drift Detection", "FastAPI"],
-    description: "Deploying machine learning models to production, continuous training pipelines, feature stores, and automated model monitoring.",
-    accentColor: "#EA580C",
-    badge: "Production MLOps"
-  },
-  {
-    id: "cert-5",
-    title: "Google Cloud Machine Learning Engineer",
-    issuer: "Google Cloud",
-    issueDate: "2023",
-    credentialId: "GCP-ML-49201",
-    verifyUrl: "https://cloud.google.com",
-    category: "Cloud & DevOps",
-    skills: ["Vertex AI", "BigQuery", "TensorFlow", "Kubeflow", "ML Pipelines"],
-    description: "Designing, building, and operationalizing machine learning models and scalable cloud infrastructure on Google Cloud Platform.",
-    accentColor: "#10B981",
-    badge: "Professional Track"
-  },
-  {
-    id: "cert-6",
-    title: "Advanced Data Structures & Algorithms in C++",
-    issuer: "Stanford Online / AlgoExpert",
-    issueDate: "2023",
-    credentialId: "DSA-CP-10293",
-    verifyUrl: "https://stanford.edu",
-    category: "Full Stack",
-    skills: ["Graph Algorithms", "Dynamic Programming", "Memory Safety", "C++20"],
-    description: "Rigorous computational problem-solving, asymptotic complexity optimization, and deterministic low-level algorithmic design.",
-    accentColor: "#8B5CF6",
-    badge: "Algorithmic Rigor"
+    badge: "Associate Certification",
+    linkedinUrl: "https://www.linkedin.com",
+    image: ""
   }
 ];

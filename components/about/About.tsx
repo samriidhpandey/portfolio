@@ -173,7 +173,7 @@ export default function About() {
 
                 {/* Skills Chips */}
                 <div className="flex flex-wrap gap-1.5 mb-5">
-                  {cert.skills.map((skill) => (
+                  {cert.skills?.map((skill) => (
                     <span
                       key={skill}
                       className="px-2 py-0.5 rounded-md bg-white border border-zinc-200/80 text-[10.5px] font-mono text-zinc-700 group-hover:border-orange-200 shadow-2xs"
