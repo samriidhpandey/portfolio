@@ -134,7 +134,7 @@ export default function Hero() {
               <span className="truncate">Delivered</span>
             </span>
             <span className="text-xs sm:text-lg font-black text-zinc-900 mt-0.5 sm:mt-1">
-              28+ Worldwide
+              28+ Projects
             </span>
           </div>
 
