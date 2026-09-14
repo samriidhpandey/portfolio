@@ -40,7 +40,7 @@ import Link from "next/link";
 import SmoothScroll from "@/components/SmoothScroll";
 import { projectsData, ProjectItem } from "@/data/projects";
 import { profileData, ProfileData } from "@/data/profile";
-import { CertificateItem, certificatesData, formatLinkedInUrl } from "@/data/certificates";
+import { CertificateItem, certificatesData, formatLinkedInUrl, DEFAULT_FEATURED_LINKEDIN_EMBED, extractIframeSrc } from "@/data/certificates";
 import { sound } from "@/lib/audio";
 import Logo from "@/components/Logo";
 
@@ -85,6 +85,10 @@ export default function AdminPage() {
     image: "",
     linkedinPostId: ""
   });
+
+  // Featured LinkedIn Embed State
+  const [featuredEmbedInput, setFeaturedEmbedInput] = useState<string>(DEFAULT_FEATURED_LINKEDIN_EMBED);
+  const [featuredEmbedSaved, setFeaturedEmbedSaved] = useState(false);
 
   // Visitors & Analytics state
   const [visitorStats, setVisitorStats] = useState({
@@ -229,6 +233,12 @@ export default function AdminPage() {
       setCertificates(certificatesData);
     };
     fetchCertificates();
+
+    // Load featured LinkedIn embed
+    const savedEmbed = localStorage.getItem("admin_featured_linkedin_embed");
+    if (savedEmbed) {
+      setFeaturedEmbedInput(savedEmbed);
+    }
 
     // Load visitor count
     const savedViews = localStorage.getItem("admin_page_views");
@@ -713,6 +723,17 @@ export default function AdminPage() {
     } catch (err) {
       console.warn("Deleted locally, server API warning:", err);
     }
+  };
+
+  const handleSaveFeaturedEmbed = (e: React.FormEvent) => {
+    e.preventDefault();
+    const cleanSrc = extractIframeSrc(featuredEmbedInput);
+    setFeaturedEmbedInput(cleanSrc);
+    localStorage.setItem("admin_featured_linkedin_embed", cleanSrc);
+    window.dispatchEvent(new Event("admin-certificates-updated"));
+    setFeaturedEmbedSaved(true);
+    setTimeout(() => setFeaturedEmbedSaved(false), 3000);
+    sound.playSuccess();
   };
 
   const unreadCount = messages.filter((m) => m.unread).length;
@@ -1269,6 +1290,54 @@ export default function AdminPage() {
                     <Plus className="w-4 h-4" />
                     <span>Upload Certificate</span>
                   </button>
+                </div>
+
+                {/* FEATURED LINKEDIN POST (EMBED) SETTINGS */}
+                <div className="p-5 sm:p-6 rounded-3xl bg-white border border-zinc-200/90 shadow-sm space-y-4">
+                  <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-zinc-100">
+                    <div>
+                      <span className="text-[10px] font-mono text-orange-600 font-bold uppercase tracking-wider block mb-0.5">
+                        TOP SHOWCASE // CERTIFICATE SECTION
+                      </span>
+                      <h3 className="font-bold text-zinc-900 text-sm sm:text-base">
+                        Featured LinkedIn Post (Embed)
+                      </h3>
+                      <p className="text-xs text-zinc-500">
+                        Ye post frontend par <b>Certificates section ke just upar</b> live embed hoti hai. Aap direct URL ya poora <code>&lt;iframe&gt;</code> code paste kar sakte hain.
+                      </p>
+                    </div>
+
+                    {featuredEmbedSaved && (
+                      <span className="px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-mono font-bold flex items-center gap-1.5 animate-fadeIn">
+                        <CheckCircle className="w-3.5 h-3.5" />
+                        <span>Featured Post Saved!</span>
+                      </span>
+                    )}
+                  </div>
+
+                  <form onSubmit={handleSaveFeaturedEmbed} className="space-y-3">
+                    <div>
+                      <label className="font-mono text-[10px] text-zinc-500 uppercase font-bold block mb-1">
+                        LINKEDIN EMBED SRC OR IFRAME CODE
+                      </label>
+                      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                        <input
+                          type="text"
+                          value={featuredEmbedInput}
+                          onChange={(e) => setFeaturedEmbedInput(e.target.value)}
+                          placeholder="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:..."
+                          className="flex-1 bg-zinc-50/80 border border-zinc-200 focus:border-orange-500 focus:bg-white rounded-xl px-3 py-2 text-xs outline-none transition-colors font-mono"
+                        />
+                        <button
+                          type="submit"
+                          className="px-5 py-2 rounded-xl bg-orange-600 hover:bg-orange-700 text-white font-mono font-bold text-xs shadow-sm active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer shrink-0"
+                        >
+                          <Save className="w-3.5 h-3.5" />
+                          <span>Update Featured Post</span>
+                        </button>
+                      </div>
+                    </div>
+                  </form>
                 </div>
 
                 {/* Certificates Grid in Admin */}

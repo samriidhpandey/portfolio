@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Award, CheckCircle2, ArrowUpRight, ShieldCheck, Sparkles } from "lucide-react";
 import { profileData } from "@/data/profile";
-import { CertificateItem, certificatesData } from "@/data/certificates";
+import { CertificateItem, certificatesData, DEFAULT_FEATURED_LINKEDIN_EMBED, extractIframeSrc } from "@/data/certificates";
 import { sound } from "@/lib/audio";
 
 // Official LinkedIn Icon component
@@ -18,9 +18,18 @@ function LinkedInIcon({ className = "w-4 h-4" }: { className?: string }) {
 
 export default function About() {
   const [certificates, setCertificates] = useState<CertificateItem[]>([]);
+  const [featuredLinkedInUrl, setFeaturedLinkedInUrl] = useState<string>(DEFAULT_FEATURED_LINKEDIN_EMBED);
 
   // Load certificates dynamically from API and localStorage
   const loadCertificates = async () => {
+    // Check saved featured LinkedIn embed URL
+    if (typeof window !== "undefined") {
+      const savedEmbed = localStorage.getItem("admin_featured_linkedin_embed");
+      if (savedEmbed) {
+        setFeaturedLinkedInUrl(extractIframeSrc(savedEmbed));
+      }
+    }
+
     try {
       const res = await fetch("/api/certificates");
       if (res.ok) {
@@ -134,8 +143,59 @@ export default function About() {
         </div>
       </div>
 
+      {/* Target Anchor for #certificates navigation */}
+      <div id="certificates" className="scroll-mt-28" />
+
+      {/* Featured LinkedIn Post Showcase - Directly Above Certificates */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5 }}
+        className="w-full flex flex-col items-center justify-center my-6"
+      >
+        <div className="w-full max-w-[560px] mx-auto flex flex-col items-center">
+          {/* Header Bar */}
+          <div className="flex items-center justify-between w-full mb-3 px-1">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-orange-500/20 bg-orange-50/80 shadow-2xs">
+              <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
+              <LinkedInIcon className="w-3.5 h-3.5 text-[#0A66C2]" />
+              <span className="text-[11px] font-mono font-bold tracking-wider text-orange-900 uppercase">
+                FEATURED LINKEDIN POST //
+              </span>
+            </div>
+            
+            <a
+              href="https://www.linkedin.com/feed/update/urn:li:ugcPost:7472653645004857344"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => sound.playClick()}
+              onMouseEnter={() => sound.playHover()}
+              className="inline-flex items-center gap-1.5 text-xs font-semibold text-orange-600 hover:text-orange-700 transition-colors group"
+            >
+              <span>View on LinkedIn</span>
+              <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+            </a>
+          </div>
+
+          {/* Iframe Card Container */}
+          <div className="w-full bg-white rounded-3xl p-2 sm:p-4 border border-zinc-200 shadow-xl shadow-orange-500/5 overflow-hidden flex justify-center">
+            <iframe
+              src={featuredLinkedInUrl}
+              height="876"
+              width="504"
+              frameBorder="0"
+              allowFullScreen
+              title="Embedded post"
+              className="w-full max-w-[504px] rounded-2xl border-0 shadow-2xs"
+              style={{ minHeight: "650px", height: "876px" }}
+            />
+          </div>
+        </div>
+      </motion.div>
+
       {/* Verified Certificates & Accreditations Section */}
-      <div id="certificates" className="glass-panel p-6 sm:p-10 rounded-3xl bg-white border border-orange-500/20 shadow-lg space-y-8">
+      <div className="glass-panel p-6 sm:p-10 rounded-3xl bg-white border border-orange-500/20 shadow-lg space-y-8">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-6 border-b border-zinc-100">
           <div>
             <div className="flex items-center gap-2 font-mono text-[11px] text-orange-600 font-bold uppercase tracking-widest mb-1.5">
