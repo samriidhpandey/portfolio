@@ -9,7 +9,6 @@ import Services from "@/components/services/Services";
 import About from "@/components/about/About";
 import TechUniverse from "@/components/skills/TechUniverse";
 import Projects from "@/components/projects/Projects";
-import Certificates from "@/components/certificates/Certificates";
 import Experience from "@/components/experience/Experience";
 import GitHubActivity from "@/components/github/GitHubActivity";
 import Contact from "@/components/contact/Contact";
@@ -42,7 +41,6 @@ export default function Home() {
           <About />
           <TechUniverse />
           <Projects />
-          <Certificates />
           <Experience />
           <GitHubActivity />
           <Contact />

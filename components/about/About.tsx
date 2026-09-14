@@ -1,19 +1,69 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Award, CheckCircle2, ArrowUpRight, ShieldCheck, FileBadge } from "lucide-react";
+import { Award, CheckCircle2, ArrowUpRight, ShieldCheck, Sparkles } from "lucide-react";
 import { profileData } from "@/data/profile";
-import { certificatesData } from "@/data/certificates";
+import { CertificateItem, certificatesData } from "@/data/certificates";
 import { sound } from "@/lib/audio";
 
-export default function About() {
-  const [selectedCertCategory, setSelectedCertCategory] = useState<string>("All");
+// Official LinkedIn Icon component
+function LinkedInIcon({ className = "w-4 h-4" }: { className?: string }) {
+  return (
+    <svg className={className} fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451c.979 0 1.778-.773 1.778-1.729V1.73C24 .774 23.205 0 22.225 0z" />
+    </svg>
+  );
+}
 
-  const filteredCertificates = certificatesData.filter((cert) => {
-    if (selectedCertCategory === "All") return true;
-    return cert.category === selectedCertCategory;
-  });
+export default function About() {
+  const [certificates, setCertificates] = useState<CertificateItem[]>([]);
+
+  // Load certificates dynamically from API and localStorage
+  const loadCertificates = async () => {
+    try {
+      const res = await fetch("/api/certificates");
+      if (res.ok) {
+        const json = await res.json();
+        if (json.success && Array.isArray(json.certificates)) {
+          setCertificates(json.certificates);
+          return;
+        }
+      }
+    } catch (err) {
+      console.warn("Could not fetch certificates from API:", err);
+    }
+
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("admin_certificates");
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed)) {
+            setCertificates(parsed);
+            return;
+          }
+        } catch (e) {}
+      }
+    }
+
+    setCertificates(certificatesData);
+  };
+
+  useEffect(() => {
+    loadCertificates();
+
+    const handleUpdate = () => {
+      loadCertificates();
+    };
+
+    window.addEventListener("admin-certificates-updated", handleUpdate);
+    window.addEventListener("storage", handleUpdate);
+    return () => {
+      window.removeEventListener("admin-certificates-updated", handleUpdate);
+      window.removeEventListener("storage", handleUpdate);
+    };
+  }, []);
 
   return (
     <section id="about" className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto relative">
@@ -96,116 +146,108 @@ export default function About() {
               Certifications & Professional Honors
             </h3>
             <p className="text-xs sm:text-sm text-zinc-500 mt-1 max-w-xl font-normal">
-              Industry-standard certified proficiencies across Deep Learning, Full-Stack Software Engineering, Cloud Architecture, and MLOps.
+              Click any certificate card below to view and verify the post directly on LinkedIn.
             </p>
           </div>
 
-          {/* Category Filter Tabs */}
-          <div className="flex flex-wrap gap-1.5 self-start sm:self-end">
-            {["All", "AI / ML", "Full Stack", "Cloud & DevOps"].map((cat) => {
-              const isActive = selectedCertCategory === cat;
-              return (
-                <button
-                  key={cat}
-                  onClick={() => {
-                    sound.playClick();
-                    setSelectedCertCategory(cat);
-                  }}
-                  onMouseEnter={() => sound.playHover()}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer ${
-                    isActive
-                      ? "bg-orange-500 text-white shadow-xs"
-                      : "bg-zinc-100 text-zinc-600 hover:text-zinc-900 hover:bg-orange-50"
-                  }`}
-                >
-                  {cat}
-                </button>
-              );
-            })}
-          </div>
+          <span className="text-xs font-mono font-bold text-orange-600 px-3.5 py-1.5 rounded-full bg-orange-50 border border-orange-200 self-start sm:self-auto">
+            {certificates.length} Verified Certificate{certificates.length === 1 ? "" : "s"}
+          </span>
         </div>
 
         {/* Certificate Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {filteredCertificates.map((cert, index) => (
-            <motion.div
-              key={cert.id}
-              initial={{ opacity: 0, y: 15 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.08, duration: 0.4 }}
-              onMouseEnter={() => sound.playHover()}
-              className="group p-6 rounded-2xl bg-zinc-50/70 hover:bg-white border border-zinc-200/90 hover:border-orange-400 hover:shadow-xl transition-all duration-300 flex flex-col justify-between"
-            >
-              <div>
-                {/* Header: Issuer + Year Badge */}
-                <div className="flex items-center justify-between gap-2 mb-3">
-                  <span className="px-2.5 py-1 rounded-lg text-[10px] font-mono font-bold uppercase tracking-wider bg-white border border-zinc-200 text-zinc-700 shadow-2xs group-hover:border-orange-200">
-                    {cert.issuer}
-                  </span>
-                  <span className="text-[11px] font-mono text-zinc-400 font-semibold">
-                    {cert.issueDate}
-                  </span>
-                </div>
+        {certificates.length === 0 ? (
+          <div className="py-14 px-6 text-center rounded-2xl bg-zinc-50/80 border border-dashed border-zinc-300 flex flex-col items-center justify-center">
+            <div className="w-12 h-12 rounded-2xl bg-orange-50 text-orange-600 flex items-center justify-center mb-3">
+              <Award className="w-6 h-6" />
+            </div>
+            <h4 className="text-sm font-bold text-zinc-800">No Certificates Uploaded Yet</h4>
+            <p className="text-xs text-zinc-500 mt-1 max-w-md">
+              Aap apne Admin Panel (<code>/admin</code>) ke <b>Certificates & LinkedIn</b> tab se certificate image, title aur LinkedIn post ID upload kar sakte hain. Wo yahan turant dikhenge!
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {certificates.map((cert, index) => {
+              const targetUrl = cert.linkedinUrl || (cert.linkedinPostId ? `https://www.linkedin.com/feed/update/urn:li:activity:${cert.linkedinPostId}` : "https://www.linkedin.com");
 
-                {/* Title */}
-                <h4 className="text-base font-bold text-zinc-900 group-hover:text-orange-600 transition-colors leading-snug mb-2">
-                  {cert.title}
-                </h4>
-
-                {/* Credential ID / Verification Status */}
-                <div className="flex items-center gap-2 mb-3 font-mono text-[10px]">
-                  <span className="text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 flex items-center gap-1">
-                    <CheckCircle2 className="w-3 h-3 text-emerald-600" />
-                    <span>VERIFIED</span>
-                  </span>
-                  {cert.credentialId && (
-                    <span className="text-zinc-400 truncate">
-                      ID: {cert.credentialId}
-                    </span>
-                  )}
-                </div>
-
-                {/* Description */}
-                <p className="text-xs text-zinc-600 leading-relaxed mb-4 font-normal">
-                  {cert.description}
-                </p>
-
-                {/* Skills Chips */}
-                <div className="flex flex-wrap gap-1.5 mb-5">
-                  {cert.skills?.map((skill) => (
-                    <span
-                      key={skill}
-                      className="px-2 py-0.5 rounded-md bg-white border border-zinc-200/80 text-[10.5px] font-mono text-zinc-700 group-hover:border-orange-200 shadow-2xs"
-                    >
-                      {skill}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              {/* Action Footer */}
-              <div className="pt-3 border-t border-zinc-200/60 flex items-center justify-between">
-                <span className="text-[10px] font-mono font-semibold text-orange-600">
-                  {cert.badge}
-                </span>
-
-                {cert.verifyUrl && (
+              return (
+                <motion.div
+                  key={cert.id || index}
+                  initial={{ opacity: 0, y: 15 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.08, duration: 0.4 }}
+                  className="group relative"
+                >
                   <a
-                    href={cert.verifyUrl}
+                    href={targetUrl}
                     target="_blank"
-                    rel="noreferrer"
-                    onClick={(e) => sound.playClick()}
-                    className="inline-flex items-center gap-1 text-xs font-mono font-bold text-zinc-600 hover:text-orange-600 transition-colors cursor-pointer"
+                    rel="noopener noreferrer"
+                    onClick={() => sound.playClick()}
+                    onMouseEnter={() => sound.playHover()}
+                    className="block h-full rounded-2xl bg-white border border-zinc-200/90 hover:border-orange-400 hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col justify-between cursor-pointer"
                   >
-                    <span>View Credential</span>
-                    <ArrowUpRight className="w-3.5 h-3.5" />
+                    {/* Certificate Image Box */}
+                    <div className="relative w-full aspect-[16/10] bg-zinc-100 overflow-hidden border-b border-zinc-100 flex items-center justify-center">
+                      {cert.image ? (
+                        <img
+                          src={cert.image}
+                          alt={cert.title}
+                          className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500 ease-out"
+                          loading="lazy"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex flex-col items-center justify-center text-center p-4 bg-orange-50/40">
+                          <Award className="w-10 h-10 text-orange-500 mb-2 group-hover:scale-110 transition-transform" />
+                          <span className="text-xs font-mono font-bold text-zinc-800">
+                            {cert.title}
+                          </span>
+                        </div>
+                      )}
+
+                      {/* LinkedIn Pill Badge Top-Right */}
+                      <div className="absolute top-3 right-3 z-10 flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/95 backdrop-blur-md border border-zinc-200 text-[#0A66C2] shadow-xs group-hover:bg-[#0A66C2] group-hover:text-white group-hover:border-[#0A66C2] transition-colors">
+                        <LinkedInIcon className="w-3.5 h-3.5 shrink-0" />
+                        <span className="text-[10px] font-mono font-bold uppercase tracking-wider">
+                          LinkedIn
+                        </span>
+                      </div>
+
+                      {/* Hover Overlay Prompt */}
+                      <div className="absolute inset-0 bg-zinc-900/40 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center pointer-events-none">
+                        <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-[#0A66C2] text-white font-mono text-xs font-bold shadow-lg transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
+                          <LinkedInIcon className="w-3.5 h-3.5" />
+                          <span>Open on LinkedIn</span>
+                          <ArrowUpRight className="w-3.5 h-3.5" />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Certificate Title & Footer */}
+                    <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
+                      <h4 className="text-base font-bold text-zinc-900 group-hover:text-orange-600 transition-colors leading-snug">
+                        {cert.title}
+                      </h4>
+
+                      <div className="pt-3 border-t border-zinc-100 flex items-center justify-between text-xs font-mono">
+                        <span className="text-zinc-500 flex items-center gap-1 text-[11px]">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+                          <span>Verified Credential</span>
+                        </span>
+
+                        <span className="inline-flex items-center gap-1 font-bold text-[#0A66C2] group-hover:translate-x-0.5 transition-transform">
+                          <span>View Post</span>
+                          <ArrowUpRight className="w-3.5 h-3.5" />
+                        </span>
+                      </div>
+                    </div>
                   </a>
-                )}
-              </div>
-            </motion.div>
-          ))}
-        </div>
+                </motion.div>
+              );
+            })}
+          </div>
+        )}
       </div>
     </section>
   );
