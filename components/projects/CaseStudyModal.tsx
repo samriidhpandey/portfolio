@@ -25,14 +25,14 @@ export default function CaseStudyModal({ project, onClose }: CaseStudyModalProps
           className="relative w-full max-w-4xl bg-white border border-orange-500/25 rounded-3xl shadow-[0_25px_70px_rgba(0,0,0,0.2)] overflow-hidden my-8"
         >
           {/* Top header bar */}
-          <div className="flex items-center justify-between p-6 border-b border-zinc-100 bg-orange-50/40">
+          <div className="flex items-center justify-between p-4 sm:p-6 border-b border-zinc-100 bg-orange-50/40">
             <div>
               <span className="text-[10px] font-mono text-orange-600 font-bold uppercase tracking-widest block mb-1">
                 SYSTEM ARCHITECTURE DOSSIER // {project.category}
               </span>
-              <h3 className="text-2xl sm:text-3xl font-black text-zinc-900 flex items-center gap-3">
+              <h3 className="text-xl sm:text-3xl font-black text-zinc-900 flex flex-wrap items-center gap-2 sm:gap-3">
                 {project.title}
-                <span className="text-xs font-mono font-bold text-orange-700 px-3 py-1 rounded-lg bg-orange-100/70 border border-orange-200">
+                <span className="text-xs font-mono font-bold text-orange-700 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-lg bg-orange-100/70 border border-orange-200">
                   {project.subtitle}
                 </span>
               </h3>
@@ -42,32 +42,32 @@ export default function CaseStudyModal({ project, onClose }: CaseStudyModalProps
                 sound.playClick();
                 onClose();
               }}
-              className="p-2 rounded-xl text-zinc-500 hover:text-zinc-900 bg-white hover:bg-zinc-100 border border-zinc-200 transition-colors cursor-pointer shadow-xs"
+              className="p-1.5 sm:p-2 rounded-xl text-zinc-500 hover:text-zinc-900 bg-white hover:bg-zinc-100 border border-zinc-200 transition-colors cursor-pointer shadow-xs shrink-0"
             >
               <X className="w-5 h-5" />
             </button>
           </div>
 
           {/* Modal Body */}
-          <div className="p-6 sm:p-8 space-y-8 max-h-[75vh] overflow-y-auto terminal-scroll">
+          <div className="p-4 sm:p-8 space-y-6 sm:space-y-8 max-h-[80vh] overflow-y-auto terminal-scroll">
             {/* Executive Summary */}
             <div>
               <h4 className="text-xs font-mono uppercase text-zinc-500 tracking-wider mb-2 font-bold">
                 EXECUTIVE ARCHITECTURE SUMMARY
               </h4>
-              <p className="text-zinc-700 text-sm sm:text-base leading-relaxed">
+              <p className="text-zinc-700 text-xs sm:text-base leading-relaxed">
                 {project.longDescription}
               </p>
             </div>
 
             {/* Metrics Ribbon */}
-            <div className="grid grid-cols-3 gap-4 p-4 rounded-2xl bg-orange-50/70 border border-orange-200">
+            <div className="grid grid-cols-3 gap-2 sm:gap-4 p-3 sm:p-4 rounded-2xl bg-orange-50/70 border border-orange-200">
               {project.metrics.map((metric, i) => (
                 <div key={i} className="text-center">
-                  <span className="text-xl sm:text-2xl font-black text-orange-600 block font-mono">
+                  <span className="text-lg sm:text-2xl font-black text-orange-600 block font-mono">
                     {metric.value}
                   </span>
-                  <span className="text-[10px] sm:text-xs font-mono text-zinc-600 uppercase font-semibold">
+                  <span className="text-[9px] sm:text-xs font-mono text-zinc-600 uppercase font-semibold">
                     {metric.label}
                   </span>
                 </div>

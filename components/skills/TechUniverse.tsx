@@ -81,6 +81,10 @@ export default function TechUniverse() {
                   sound.playHover();
                   setHoveredNode(skill);
                 }}
+                onClick={() => {
+                  sound.playClick();
+                  setHoveredNode(skill);
+                }}
                 className={`relative p-4 rounded-xl border transition-all duration-300 cursor-pointer ${
                   isHovered
                     ? "bg-orange-50/80 border-orange-500 shadow-md shadow-orange-500/10 scale-[1.03] z-20"

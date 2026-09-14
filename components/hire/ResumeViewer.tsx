@@ -1,12 +1,29 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Download, Printer, Copy, Check, FileText, ExternalLink, Mail, Phone, MapPin, Briefcase, GraduationCap, Award, Code2 } from "lucide-react";
 import { sound } from "@/lib/audio";
 import Logo from "@/components/Logo";
 
 export default function ResumeViewer() {
   const [copied, setCopied] = useState(false);
+  const [uploadedResume, setUploadedResume] = useState<{ name: string; dataUrl: string } | null>(null);
+
+  useEffect(() => {
+    const loadResume = () => {
+      const saved = localStorage.getItem("admin_resume_file");
+      if (saved) {
+        try {
+          setUploadedResume(JSON.parse(saved));
+        } catch (e) {}
+      } else {
+        setUploadedResume(null);
+      }
+    };
+    loadResume();
+    window.addEventListener("admin-resume-updated", loadResume);
+    return () => window.removeEventListener("admin-resume-updated", loadResume);
+  }, []);
 
   const handlePrint = () => {
     sound.playClick();
@@ -39,13 +56,25 @@ export default function ResumeViewer() {
             <span>{copied ? "Link Copied!" : "Share Link"}</span>
           </button>
 
-          <button
-            onClick={handlePrint}
-            className="flex items-center gap-1.5 px-4 py-1.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white text-xs font-bold shadow-sm hover:scale-105 transition-all cursor-pointer"
-          >
-            <Printer className="w-3.5 h-3.5" />
-            <span>Print / Save PDF</span>
-          </button>
+          {uploadedResume ? (
+            <a
+              href={uploadedResume.dataUrl}
+              download={uploadedResume.name}
+              onClick={() => sound.playClick()}
+              className="flex items-center gap-1.5 px-4 py-1.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white text-xs font-bold shadow-sm hover:scale-105 transition-all cursor-pointer"
+            >
+              <Download className="w-3.5 h-3.5" />
+              <span>Download CV ({uploadedResume.name.endsWith('.pdf') ? 'PDF' : 'DOC'})</span>
+            </a>
+          ) : (
+            <button
+              onClick={handlePrint}
+              className="flex items-center gap-1.5 px-4 py-1.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white text-xs font-bold shadow-sm hover:scale-105 transition-all cursor-pointer"
+            >
+              <Printer className="w-3.5 h-3.5" />
+              <span>Print / Save PDF</span>
+            </button>
+          )}
         </div>
       </div>
 

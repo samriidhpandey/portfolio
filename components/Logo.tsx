@@ -73,18 +73,18 @@ export default function Logo({
   const Content = (
     <div className={`inline-flex items-center gap-2.5 sm:gap-3 group cursor-pointer ${className}`}>
       {BullBadge}
-      <div className="flex flex-col text-left">
+      <div className="flex flex-col text-left min-w-0">
         <div className="flex items-center leading-none">
           <span
-            className={`font-mono ${currentSize.text} tracking-wider font-black text-zinc-900 group-hover:text-orange-600 transition-colors flex items-center gap-1.5`}
+            className={`font-mono ${currentSize.text} tracking-wider font-black text-zinc-900 group-hover:text-orange-600 transition-colors flex items-center gap-1.5 truncate`}
           >
             {companyName}
           </span>
         </div>
         <span
-          className={`font-mono ${currentSize.sub} text-zinc-400 tracking-wider font-bold group-hover:text-orange-600 transition-colors mt-0.5 flex items-center gap-1`}
+          className={`font-mono ${currentSize.sub} text-zinc-400 tracking-wider font-bold group-hover:text-orange-600 transition-colors mt-0.5 flex items-center gap-1 truncate`}
         >
-          <span>{tagline}</span>
+          <span className="truncate">{tagline}</span>
         </span>
       </div>
     </div>

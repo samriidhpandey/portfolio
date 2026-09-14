@@ -185,7 +185,7 @@ export default function Navbar() {
               sound.playClick();
             }
           }}
-          className="flex items-center gap-2 group cursor-pointer"
+          className="flex items-center gap-2 group cursor-pointer min-w-0 shrink"
           onMouseEnter={() => sound.playHover()}
         >
           <Logo size="sm" variant="full" />
@@ -225,7 +225,7 @@ export default function Navbar() {
         </div>
 
         {/* Right Action Buttons */}
-        <div className="flex items-center gap-1.5 sm:gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
           {/* Sound FX Toggle */}
           <button
             onClick={handleSoundToggle}

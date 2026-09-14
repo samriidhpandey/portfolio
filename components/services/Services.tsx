@@ -47,8 +47,8 @@ export default function Services() {
           />
 
           {/* Top Right Services Portal Badge */}
-          <div className="absolute top-4 sm:top-6 right-4 sm:right-6 flex items-center gap-2 z-20">
-            <span className="px-4 py-2 rounded-xl bg-white/95 group-hover:bg-orange-50 backdrop-blur-md border border-orange-500/30 text-zinc-900 group-hover:text-orange-600 font-bold text-xs font-mono shadow-md transition-all flex items-center gap-1.5 cursor-pointer">
+          <div className="absolute top-3 sm:top-6 right-3 sm:right-6 flex items-center gap-2 z-20">
+            <span className="px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-white/95 group-hover:bg-orange-50 backdrop-blur-md border border-orange-500/30 text-zinc-900 group-hover:text-orange-600 font-bold text-[10px] sm:text-xs font-mono shadow-md transition-all flex items-center gap-1.5 cursor-pointer">
               <span>Explore Services Page</span>
               <ArrowRight className="w-3.5 h-3.5 text-orange-500 group-hover:translate-x-1 transition-transform" />
             </span>
@@ -56,18 +56,18 @@ export default function Services() {
         </Link>
 
         {/* Bottom Quick-Action Bar */}
-        <div className="p-4 sm:p-6 bg-gradient-to-r from-orange-50 via-white to-amber-50 border-t border-orange-200/80 flex flex-wrap items-center justify-between gap-4">
+        <div className="p-4 sm:p-6 bg-gradient-to-r from-orange-50 via-white to-amber-50 border-t border-orange-200/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
           <div className="flex items-center gap-2 text-xs font-mono">
-            <span className="w-2.5 h-2.5 rounded-full bg-orange-500 animate-ping" />
-            <span className="font-bold text-zinc-900">PROVEN 5-STAGE BUSINESS ROADMAP:</span>
+            <span className="w-2.5 h-2.5 rounded-full bg-orange-500 animate-ping shrink-0" />
+            <span className="font-bold text-zinc-900 text-xs">PROVEN 5-STAGE BUSINESS ROADMAP:</span>
             <span className="text-zinc-600 hidden md:inline">Plan → Build → Optimize → Scale → Grow</span>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 w-full sm:w-auto">
             <Link
               href="/services"
               onClick={() => sound.playClick()}
-              className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-orange-500 via-orange-600 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-bold text-xs sm:text-sm tracking-wide shadow-md shadow-orange-500/25 hover:scale-105 transition-all flex items-center gap-2 cursor-pointer"
+              className="w-full sm:w-auto justify-center px-5 sm:px-6 py-2.5 rounded-xl bg-gradient-to-r from-orange-500 via-orange-600 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-bold text-xs sm:text-sm tracking-wide shadow-md shadow-orange-500/25 hover:scale-105 transition-all flex items-center gap-2 cursor-pointer text-center"
             >
               <span>Go to Full Services Page (/services)</span>
               <ArrowRight className="w-4 h-4" />

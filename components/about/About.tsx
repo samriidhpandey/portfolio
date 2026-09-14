@@ -2,69 +2,18 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Cpu, Code2, Network, BrainCircuit, Bot, Rocket, ArrowRight, CheckCircle2 } from "lucide-react";
+import { Award, CheckCircle2, ArrowUpRight, ShieldCheck, FileBadge } from "lucide-react";
 import { profileData } from "@/data/profile";
+import { certificatesData } from "@/data/certificates";
 import { sound } from "@/lib/audio";
 
-const progressionSteps = [
-  {
-    id: "prog",
-    title: "Programming",
-    subtitle: "Foundations & Algorithmic Rigor",
-    icon: Code2,
-    color: "#EA580C",
-    description: "Deep computational intuition through C++, data structures, memory models, and deterministic algorithm optimization.",
-    skills: ["C++", "Algorithms", "Data Structures", "Memory Management"]
-  },
-  {
-    id: "web",
-    title: "Web Development",
-    subtitle: "Reactive Full-Stack Architecture",
-    icon: Cpu,
-    color: "#F97316",
-    description: "Building responsive, sub-second web applications, SSR pipelines, and resilient distributed microservices.",
-    skills: ["TypeScript", "Next.js", "React 19", "Node.js", "Tailwind CSS"]
-  },
-  {
-    id: "ml",
-    title: "Machine Learning",
-    subtitle: "Statistical Inference & Feature Design",
-    icon: Network,
-    color: "#F59E0B",
-    description: "Classical modeling, gradient boosting, dimension reduction, and rigorous validation on high-dimensional datasets.",
-    skills: ["Python", "Scikit-Learn", "NumPy & Pandas", "XGBoost"]
-  },
-  {
-    id: "dl",
-    title: "Deep Learning",
-    subtitle: "Neural Graphs & Representations",
-    icon: BrainCircuit,
-    color: "#EA580C",
-    description: "Designing convolutional and transformer architectures in PyTorch, loss function tuning, and model quantization.",
-    skills: ["PyTorch", "TensorRT", "YOLOv8", "Transformers", "CUDA"]
-  },
-  {
-    id: "aie",
-    title: "AI Engineering",
-    subtitle: "Orchestration & Vector Workflows",
-    icon: Bot,
-    color: "#F97316",
-    description: "Building production RAG pipelines, semantic cache clusters, and multi-agent cyclic graph execution engines.",
-    skills: ["LangChain", "Qdrant", "FastAPI", "Prompt Optimization"]
-  },
-  {
-    id: "prod",
-    title: "AI Products",
-    subtitle: "Autonomous Real-World Systems",
-    icon: Rocket,
-    color: "#FB923C",
-    description: "Deploying end-to-end intelligent products combining intuitive UI, deterministic safeguards, and high-throughput inference.",
-    skills: ["Agentic SaaS", "Production Monitoring", "Edge Inference"]
-  }
-];
-
 export default function About() {
-  const [selectedStep, setSelectedStep] = useState(0);
+  const [selectedCertCategory, setSelectedCertCategory] = useState<string>("All");
+
+  const filteredCertificates = certificatesData.filter((cert) => {
+    if (selectedCertCategory === "All") return true;
+    return cert.category === selectedCertCategory;
+  });
 
   return (
     <section id="about" className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto relative">
@@ -135,85 +84,127 @@ export default function About() {
         </div>
       </div>
 
-      {/* Interactive Progression Pipeline */}
-      <div className="glass-panel p-6 sm:p-8 rounded-2xl bg-white border-orange-500/20 shadow-md">
-        <div className="flex items-center justify-between mb-8 pb-4 border-b border-zinc-100">
+      {/* Verified Certificates & Accreditations Section */}
+      <div id="certificates" className="glass-panel p-6 sm:p-10 rounded-3xl bg-white border border-orange-500/20 shadow-lg space-y-8">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-6 border-b border-zinc-100">
           <div>
-            <span className="text-[10px] font-mono text-orange-600 font-bold uppercase tracking-widest block mb-1">
-              ENGINEERING EVOLUTION
-            </span>
-            <h3 className="text-xl sm:text-2xl font-bold text-zinc-900">
-              The Architecture Progression
-            </h3>
-          </div>
-          <span className="text-xs font-mono font-semibold text-zinc-500 hidden sm:block">
-            STEP 0{selectedStep + 1} OF 06
-          </span>
-        </div>
-
-        {/* Step Buttons Pipeline */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-8">
-          {progressionSteps.map((step, idx) => {
-            const Icon = step.icon;
-            const isSelected = selectedStep === idx;
-            return (
-              <button
-                key={step.id}
-                onClick={() => {
-                  sound.playClick();
-                  setSelectedStep(idx);
-                }}
-                onMouseEnter={() => sound.playHover()}
-                className={`flex flex-col items-start p-3.5 rounded-xl border text-left transition-all cursor-pointer ${
-                  isSelected
-                    ? "bg-orange-50 border-orange-500 shadow-sm"
-                    : "bg-zinc-50/70 border-zinc-200/80 hover:border-orange-300 hover:bg-white"
-                }`}
-              >
-                <div className="flex items-center justify-between w-full mb-3">
-                  <div
-                    className="w-8 h-8 rounded-lg flex items-center justify-center shadow-xs"
-                    style={{ backgroundColor: `${step.color}18` }}
-                  >
-                    <Icon className="w-4 h-4" style={{ color: step.color }} />
-                  </div>
-                  <span className="text-[10px] font-mono text-zinc-400 font-medium">0{idx + 1}</span>
-                </div>
-                <span className={`text-xs font-bold ${isSelected ? "text-orange-700" : "text-zinc-700"}`}>
-                  {step.title}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Selected Progression Details Card */}
-        <div className="p-6 rounded-xl bg-gradient-to-br from-orange-50/60 to-white border border-orange-200/80 grid grid-cols-1 md:grid-cols-12 gap-6 items-center shadow-xs">
-          <div className="md:col-span-8">
-            <div className="flex items-center gap-2 mb-2 font-mono text-xs" style={{ color: progressionSteps[selectedStep].color }}>
-              <span className="font-bold">PHASE 0{selectedStep + 1} //</span>
-              <span className="text-zinc-900 font-bold">{progressionSteps[selectedStep].subtitle}</span>
+            <div className="flex items-center gap-2 font-mono text-[11px] text-orange-600 font-bold uppercase tracking-widest mb-1.5">
+              <Award className="w-4 h-4 text-orange-500" />
+              <span>ACCREDITED EXPERTISE // VERIFIED CREDENTIALS</span>
             </div>
-            <p className="text-zinc-700 text-sm sm:text-base leading-relaxed">
-              {progressionSteps[selectedStep].description}
+            <h3 className="text-2xl sm:text-3xl font-black text-zinc-900 tracking-tight">
+              Certifications & Professional Honors
+            </h3>
+            <p className="text-xs sm:text-sm text-zinc-500 mt-1 max-w-xl font-normal">
+              Industry-standard certified proficiencies across Deep Learning, Full-Stack Software Engineering, Cloud Architecture, and MLOps.
             </p>
           </div>
 
-          <div className="md:col-span-4 border-t md:border-t-0 md:border-l border-orange-200/60 pt-4 md:pt-0 md:pl-6">
-            <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-wider block mb-2 font-semibold">
-              CORE TECHNOLOGIES
-            </span>
-            <div className="flex flex-wrap gap-2">
-              {progressionSteps[selectedStep].skills.map((skill) => (
-                <span
-                  key={skill}
-                  className="px-2.5 py-1 rounded-lg bg-white border border-orange-200 text-xs font-mono font-medium text-orange-800 shadow-xs"
+          {/* Category Filter Tabs */}
+          <div className="flex flex-wrap gap-1.5 self-start sm:self-end">
+            {["All", "AI / ML", "Full Stack", "Cloud & DevOps"].map((cat) => {
+              const isActive = selectedCertCategory === cat;
+              return (
+                <button
+                  key={cat}
+                  onClick={() => {
+                    sound.playClick();
+                    setSelectedCertCategory(cat);
+                  }}
+                  onMouseEnter={() => sound.playHover()}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer ${
+                    isActive
+                      ? "bg-orange-500 text-white shadow-xs"
+                      : "bg-zinc-100 text-zinc-600 hover:text-zinc-900 hover:bg-orange-50"
+                  }`}
                 >
-                  {skill}
-                </span>
-              ))}
-            </div>
+                  {cat}
+                </button>
+              );
+            })}
           </div>
+        </div>
+
+        {/* Certificate Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {filteredCertificates.map((cert, index) => (
+            <motion.div
+              key={cert.id}
+              initial={{ opacity: 0, y: 15 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.08, duration: 0.4 }}
+              onMouseEnter={() => sound.playHover()}
+              className="group p-6 rounded-2xl bg-zinc-50/70 hover:bg-white border border-zinc-200/90 hover:border-orange-400 hover:shadow-xl transition-all duration-300 flex flex-col justify-between"
+            >
+              <div>
+                {/* Header: Issuer + Year Badge */}
+                <div className="flex items-center justify-between gap-2 mb-3">
+                  <span className="px-2.5 py-1 rounded-lg text-[10px] font-mono font-bold uppercase tracking-wider bg-white border border-zinc-200 text-zinc-700 shadow-2xs group-hover:border-orange-200">
+                    {cert.issuer}
+                  </span>
+                  <span className="text-[11px] font-mono text-zinc-400 font-semibold">
+                    {cert.issueDate}
+                  </span>
+                </div>
+
+                {/* Title */}
+                <h4 className="text-base font-bold text-zinc-900 group-hover:text-orange-600 transition-colors leading-snug mb-2">
+                  {cert.title}
+                </h4>
+
+                {/* Credential ID / Verification Status */}
+                <div className="flex items-center gap-2 mb-3 font-mono text-[10px]">
+                  <span className="text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 flex items-center gap-1">
+                    <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                    <span>VERIFIED</span>
+                  </span>
+                  {cert.credentialId && (
+                    <span className="text-zinc-400 truncate">
+                      ID: {cert.credentialId}
+                    </span>
+                  )}
+                </div>
+
+                {/* Description */}
+                <p className="text-xs text-zinc-600 leading-relaxed mb-4 font-normal">
+                  {cert.description}
+                </p>
+
+                {/* Skills Chips */}
+                <div className="flex flex-wrap gap-1.5 mb-5">
+                  {cert.skills.map((skill) => (
+                    <span
+                      key={skill}
+                      className="px-2 py-0.5 rounded-md bg-white border border-zinc-200/80 text-[10.5px] font-mono text-zinc-700 group-hover:border-orange-200 shadow-2xs"
+                    >
+                      {skill}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Action Footer */}
+              <div className="pt-3 border-t border-zinc-200/60 flex items-center justify-between">
+                <span className="text-[10px] font-mono font-semibold text-orange-600">
+                  {cert.badge}
+                </span>
+
+                {cert.verifyUrl && (
+                  <a
+                    href={cert.verifyUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    onClick={(e) => sound.playClick()}
+                    className="inline-flex items-center gap-1 text-xs font-mono font-bold text-zinc-600 hover:text-orange-600 transition-colors cursor-pointer"
+                  >
+                    <span>View Credential</span>
+                    <ArrowUpRight className="w-3.5 h-3.5" />
+                  </a>
+                )}
+              </div>
+            </motion.div>
+          ))}
         </div>
       </div>
     </section>

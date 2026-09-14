@@ -52,77 +52,77 @@ export default function HirePage() {
           <section className="text-center pt-8 pb-6 space-y-5">
             
             {/* Real-time Status Beacon */}
-            <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full border border-orange-500/35 bg-white/95 backdrop-blur-md shadow-xs">
-              <span className="relative flex h-2.5 w-2.5">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 sm:px-4 sm:py-1.5 rounded-full border border-orange-500/35 bg-white/95 backdrop-blur-md shadow-xs max-w-[95vw]">
+              <span className="relative flex h-2 sm:h-2.5 w-2 sm:w-2.5 shrink-0">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
+                <span className="relative inline-flex rounded-full h-2 sm:h-2.5 w-2 sm:w-2.5 bg-emerald-500" />
               </span>
-              <span className="text-xs font-mono font-bold text-zinc-800 uppercase tracking-wide">
+              <span className="text-[10px] sm:text-xs font-mono font-bold text-zinc-800 uppercase tracking-wide text-center truncate">
                 AVAILABLE FOR FULL-TIME HIRE & FREELANCE CONTRACTS
               </span>
             </div>
 
             {/* Title */}
-            <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-zinc-900 leading-[1.1]">
+            <h1 className="text-3xl sm:text-6xl font-black tracking-tight text-zinc-900 leading-[1.15] sm:leading-[1.1]">
               Hire <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-600 via-amber-600 to-orange-500">Samridh Pandey</span>
             </h1>
 
             {/* Subtitle */}
-            <p className="text-base sm:text-xl text-zinc-600 max-w-2xl mx-auto leading-relaxed font-normal">
+            <p className="text-sm sm:text-xl text-zinc-600 max-w-2xl mx-auto leading-relaxed font-normal px-2">
               Direct live outlet: View my official curriculum vitae, verify my GitHub code repositories, connect on LinkedIn, or start a project immediately.
             </p>
 
             {/* Real-Time Telemetry Bar */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-4xl mx-auto p-4 rounded-3xl bg-white border border-zinc-200/90 shadow-sm text-left font-mono text-xs">
-              <div className="p-3 border-r border-zinc-100 last:border-0">
-                <span className="text-[10px] text-zinc-400 font-bold uppercase block flex items-center gap-1">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-4xl mx-auto p-3 sm:p-4 rounded-3xl bg-white border border-zinc-200/90 shadow-sm text-left font-mono text-xs">
+              <div className="p-2.5 sm:p-3 border-r border-zinc-100">
+                <span className="text-[9px] sm:text-[10px] text-zinc-400 font-bold uppercase block flex items-center gap-1">
                   <Clock className="w-3 h-3 text-orange-500" /> LOCAL TIME
                 </span>
-                <span className="text-sm font-black text-zinc-900 mt-1 block">
+                <span className="text-xs sm:text-sm font-black text-zinc-900 mt-1 block">
                   {currentTime || "Loading..."}
                 </span>
-                <span className="text-[10px] text-orange-600">IST / UTC+5:30</span>
+                <span className="text-[9px] sm:text-[10px] text-orange-600">IST / UTC+5:30</span>
               </div>
 
-              <div className="p-3 border-r border-zinc-100 last:border-0">
-                <span className="text-[10px] text-zinc-400 font-bold uppercase block flex items-center gap-1">
+              <div className="p-2.5 sm:p-3 border-r-0 md:border-r border-zinc-100">
+                <span className="text-[9px] sm:text-[10px] text-zinc-400 font-bold uppercase block flex items-center gap-1">
                   <CheckCircle2 className="w-3 h-3 text-emerald-600" /> RESPONSE TIME
                 </span>
-                <span className="text-sm font-black text-zinc-900 mt-1 block">
+                <span className="text-xs sm:text-sm font-black text-zinc-900 mt-1 block">
                   &lt; 2 Hours
                 </span>
-                <span className="text-[10px] text-emerald-600">Fast Communication</span>
+                <span className="text-[9px] sm:text-[10px] text-emerald-600">Fast Communication</span>
               </div>
 
-              <div className="p-3 border-r border-zinc-100 last:border-0">
-                <span className="text-[10px] text-zinc-400 font-bold uppercase block flex items-center gap-1">
+              <div className="p-2.5 sm:p-3 border-r border-zinc-100">
+                <span className="text-[9px] sm:text-[10px] text-zinc-400 font-bold uppercase block flex items-center gap-1">
                   <Briefcase className="w-3 h-3 text-orange-500" /> PREFERRED ROLES
                 </span>
-                <span className="text-sm font-black text-zinc-900 mt-1 block">
+                <span className="text-xs sm:text-sm font-black text-zinc-900 mt-1 block">
                   Full-Stack / AI
                 </span>
-                <span className="text-[10px] text-zinc-500">Contract & Full-Time</span>
+                <span className="text-[9px] sm:text-[10px] text-zinc-500">Contract & Full-Time</span>
               </div>
 
-              <div className="p-3">
-                <span className="text-[10px] text-zinc-400 font-bold uppercase block flex items-center gap-1">
+              <div className="p-2.5 sm:p-3">
+                <span className="text-[9px] sm:text-[10px] text-zinc-400 font-bold uppercase block flex items-center gap-1">
                   <MapPin className="w-3 h-3 text-amber-500" /> LOCATION
                 </span>
-                <span className="text-sm font-black text-zinc-900 mt-1 block">
-                  India • Global Remote
+                <span className="text-xs sm:text-sm font-black text-zinc-900 mt-1 block">
+                  India • Remote
                 </span>
-                <span className="text-[10px] text-zinc-500">Async-Ready</span>
+                <span className="text-[9px] sm:text-[10px] text-zinc-500">Async-Ready</span>
               </div>
             </div>
 
             {/* Quick Action Buttons */}
-            <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-2.5 sm:gap-3 pt-2 max-w-md sm:max-w-none mx-auto">
               <a
                 href="https://wa.me/919369904727"
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => sound.playClick()}
-                className="px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm tracking-wide shadow-md shadow-emerald-600/25 flex items-center gap-2 hover:scale-105 transition-all cursor-pointer"
+                className="px-5 sm:px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm tracking-wide shadow-md shadow-emerald-600/25 flex items-center justify-center gap-2 hover:scale-[1.02] transition-all cursor-pointer text-center"
               >
                 <Phone className="w-4 h-4" />
                 <span>WhatsApp Instant Chat</span>
@@ -131,7 +131,7 @@ export default function HirePage() {
               <a
                 href="mailto:samridhpandey727@gmail.com"
                 onClick={() => sound.playClick()}
-                className="px-6 py-3 rounded-xl bg-gradient-to-r from-orange-500 via-orange-600 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-bold text-xs sm:text-sm tracking-wide shadow-md shadow-orange-500/25 flex items-center gap-2 hover:scale-105 transition-all cursor-pointer"
+                className="px-5 sm:px-6 py-3 rounded-xl bg-gradient-to-r from-orange-500 via-orange-600 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-bold text-xs sm:text-sm tracking-wide shadow-md shadow-orange-500/25 flex items-center justify-center gap-2 hover:scale-[1.02] transition-all cursor-pointer text-center"
               >
                 <Mail className="w-4 h-4" />
                 <span>Email: samridhpandey727@gmail.com</span>

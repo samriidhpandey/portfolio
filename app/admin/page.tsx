@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Lock,
@@ -29,7 +29,9 @@ import {
   Monitor,
   RefreshCw,
   LogOut,
-  MapPin
+  MapPin,
+  UploadCloud,
+  Download
 } from "lucide-react";
 import Link from "next/link";
 import SmoothScroll from "@/components/SmoothScroll";
@@ -73,6 +75,9 @@ export default function AdminPage() {
   // Project Modal state
   const [showProjectModal, setShowProjectModal] = useState(false);
   const [editingProject, setEditingProject] = useState<ProjectItem | null>(null);
+  const [isFetchingMetadata, setIsFetchingMetadata] = useState(false);
+  const [fetchError, setFetchError] = useState<string | null>(null);
+  const [fetchSuccess, setFetchSuccess] = useState(false);
   const [projectForm, setProjectForm] = useState({
     title: "",
     subtitle: "",
@@ -93,6 +98,19 @@ export default function AdminPage() {
     tagline: profileData.tagline
   });
   const [saveSuccess, setSaveSuccess] = useState(false);
+
+  // Resume File Upload State
+  const [resumeFile, setResumeFile] = useState<{
+    name: string;
+    size: number;
+    type: string;
+    dataUrl: string;
+    uploadedAt: string;
+  } | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [fileError, setFileError] = useState<string | null>(null);
+  const [uploadSuccessMsg, setUploadSuccessMsg] = useState(false);
+  const resumeInputRef = useRef<HTMLInputElement>(null);
 
   // Initial Auth Check & Data Loading
   useEffect(() => {
@@ -138,6 +156,14 @@ export default function AdminPage() {
           location: parsed.location,
           tagline: parsed.tagline
         });
+      } catch (e) {}
+    }
+
+    // Load uploaded resume file
+    const savedResume = localStorage.getItem("admin_resume_file");
+    if (savedResume) {
+      try {
+        setResumeFile(JSON.parse(savedResume));
       } catch (e) {}
     }
 
@@ -225,6 +251,10 @@ export default function AdminPage() {
   // Project Operations
   const handleOpenProjectModal = (proj?: ProjectItem) => {
     sound.playClick();
+    setFetchError(null);
+    setFetchSuccess(false);
+    setIsFetchingMetadata(false);
+
     if (proj) {
       setEditingProject(proj);
       setProjectForm({
@@ -244,13 +274,68 @@ export default function AdminPage() {
         subtitle: "",
         category: "Full Stack",
         description: "",
-        githubUrl: "https://github.com/samridhpandey/",
+        githubUrl: "",
         demoUrl: "",
         image: "",
-        technologies: "Next.js, TypeScript, Tailwind CSS"
+        technologies: ""
       });
     }
     setShowProjectModal(true);
+  };
+
+  const handleAutoFetchMetadata = async () => {
+    sound.playClick();
+    setFetchError(null);
+    setFetchSuccess(false);
+
+    const gh = projectForm.githubUrl.trim();
+    const demo = projectForm.demoUrl.trim();
+
+    if (!gh && !demo) {
+      setFetchError("Please enter a GitHub URL or Project Link / Demo URL first.");
+      return;
+    }
+
+    setIsFetchingMetadata(true);
+
+    try {
+      const res = await fetch("/api/fetch-project-metadata", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ githubUrl: gh, demoUrl: demo })
+      });
+
+      const json = await res.json();
+
+      if (!res.ok || !json.success) {
+        throw new Error(json.error || "Failed to fetch metadata.");
+      }
+
+      const data = json.data;
+      setProjectForm((prev) => ({
+        ...prev,
+        title: data.title || prev.title,
+        subtitle: data.subtitle || prev.subtitle,
+        category: data.category || prev.category,
+        description: data.description || prev.description,
+        technologies:
+          data.technologies && data.technologies.length > 0
+            ? data.technologies.join(", ")
+            : prev.technologies,
+        image: data.image || prev.image,
+        githubUrl: data.githubUrl || prev.githubUrl,
+        demoUrl: data.demoUrl || prev.demoUrl
+      }));
+
+      setFetchSuccess(true);
+      sound.playSuccess();
+      setTimeout(() => setFetchSuccess(false), 5000);
+    } catch (err: any) {
+      console.error(err);
+      setFetchError(err.message || "Failed to fetch details. Please verify your link.");
+    } finally {
+      setIsFetchingMetadata(false);
+    }
   };
 
   const handleSaveProject = (e: React.FormEvent) => {
@@ -290,7 +375,7 @@ export default function AdminPage() {
         image: projectForm.image || undefined,
         accentColor: "#FF6B00",
         featured: true,
-        metrics: [{ label: "Client Rating", value: "5.0 ★" }],
+        metrics: [],
         architecture: {
           overview: "Production web architecture with Next.js & TypeScript.",
           challenge: "Scaling high concurrency and speed.",
@@ -314,6 +399,101 @@ export default function AdminPage() {
     setProjects(updated);
     localStorage.setItem("admin_projects", JSON.stringify(updated));
     window.dispatchEvent(new Event("admin-projects-updated"));
+  };
+
+  // Resume File Handlers
+  const handleFileProcess = (file: File) => {
+    setFileError(null);
+    const validExts = [".pdf", ".doc", ".docx"];
+    const ext = "." + file.name.split(".").pop()?.toLowerCase();
+    const isDoc =
+      validExts.includes(ext) ||
+      file.type === "application/pdf" ||
+      file.type === "application/msword" ||
+      file.type ===
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+
+    if (!isDoc) {
+      setFileError("Please upload a PDF or Word document (.pdf, .doc, .docx)");
+      sound.playClick();
+      return;
+    }
+
+    if (file.size > 15 * 1024 * 1024) {
+      setFileError("File size exceeds 15MB limit. Please upload a smaller file.");
+      sound.playClick();
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const dataUrl = reader.result as string;
+      const meta = {
+        name: file.name,
+        size: file.size,
+        type: file.type || "application/pdf",
+        dataUrl,
+        uploadedAt: new Date().toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric"
+        })
+      };
+      setResumeFile(meta);
+      try {
+        localStorage.setItem("admin_resume_file", JSON.stringify(meta));
+        window.dispatchEvent(new Event("admin-resume-updated"));
+      } catch (err) {
+        console.warn("Could not save to localStorage", err);
+      }
+      setUploadSuccessMsg(true);
+      sound.playSuccess();
+      setTimeout(() => setUploadSuccessMsg(false), 3500);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      handleFileProcess(e.dataTransfer.files[0]);
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!isDragging) setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
+
+  const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      handleFileProcess(e.target.files[0]);
+    }
+  };
+
+  const handleRemoveResume = () => {
+    sound.playClick();
+    setResumeFile(null);
+    localStorage.removeItem("admin_resume_file");
+    window.dispatchEvent(new Event("admin-resume-updated"));
+    if (resumeInputRef.current) {
+      resumeInputRef.current.value = "";
+    }
+  };
+
+  const formatFileSize = (bytes: number) => {
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
   };
 
   // Profile Save Handler
@@ -852,11 +1032,11 @@ export default function AdminPage() {
             {/* TAB 4: RESUME & PROFILE INFO SETTINGS                                   */}
             {/* ========================================================================= */}
             {activeTab === "profile" && (
-              <div className="p-6 sm:p-8 rounded-3xl bg-white border border-zinc-200 shadow-sm max-w-3xl space-y-6">
+              <div className="p-6 sm:p-8 rounded-3xl bg-white border border-zinc-200 shadow-sm max-w-3xl space-y-8">
                 <div className="flex items-center justify-between pb-4 border-b border-zinc-100">
                   <div>
                     <h2 className="text-lg font-bold text-zinc-900">Profile & Resume Details</h2>
-                    <p className="text-xs text-zinc-500 font-mono">Update information visible on portfolio</p>
+                    <p className="text-xs text-zinc-500 font-mono">Update information & resume documents visible on portfolio</p>
                   </div>
                   {saveSuccess && (
                     <span className="text-xs font-mono font-bold text-emerald-600 flex items-center gap-1">
@@ -865,75 +1045,205 @@ export default function AdminPage() {
                   )}
                 </div>
 
-                <form onSubmit={handleSaveProfile} className="space-y-4 text-xs">
-                  <div>
-                    <label className="font-mono text-zinc-500 uppercase font-bold block mb-1">
-                      FULL NAME
+                {/* Resume File Upload: Drag & Drop + File Select */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <label className="font-mono text-zinc-800 uppercase font-bold text-xs flex items-center gap-1.5">
+                      <FileText className="w-4 h-4 text-orange-500" />
+                      <span>OFFICIAL RESUME / CV DOCUMENT</span>
                     </label>
-                    <input
-                      type="text"
-                      value={profileForm.name}
-                      onChange={(e) => setProfileForm({ ...profileForm, name: e.target.value })}
-                      className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 outline-none focus:border-orange-500"
-                    />
+                    <span className="text-[11px] font-mono text-zinc-400">PDF, DOC, DOCX (up to 15MB)</span>
                   </div>
 
-                  <div>
-                    <label className="font-mono text-zinc-500 uppercase font-bold block mb-1">
-                      PROFESSIONAL TITLE
-                    </label>
-                    <input
-                      type="text"
-                      value={profileForm.title}
-                      onChange={(e) => setProfileForm({ ...profileForm, title: e.target.value })}
-                      className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 outline-none focus:border-orange-500"
-                    />
-                  </div>
+                  {/* Hidden Native File Input */}
+                  <input
+                    ref={resumeInputRef}
+                    type="file"
+                    accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                    onChange={handleFileInputChange}
+                    className="hidden"
+                  />
 
-                  <div>
-                    <label className="font-mono text-zinc-500 uppercase font-bold block mb-1">
-                      AVAILABILITY BADGE TEXT
-                    </label>
-                    <input
-                      type="text"
-                      value={profileForm.availability}
-                      onChange={(e) => setProfileForm({ ...profileForm, availability: e.target.value })}
-                      className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 outline-none focus:border-orange-500"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="font-mono text-zinc-500 uppercase font-bold block mb-1">
-                      LOCATION
-                    </label>
-                    <input
-                      type="text"
-                      value={profileForm.location}
-                      onChange={(e) => setProfileForm({ ...profileForm, location: e.target.value })}
-                      className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 outline-none focus:border-orange-500"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="font-mono text-zinc-500 uppercase font-bold block mb-1">
-                      TAGLINE / HERO MISSION STATEMENT
-                    </label>
-                    <textarea
-                      rows={3}
-                      value={profileForm.tagline}
-                      onChange={(e) => setProfileForm({ ...profileForm, tagline: e.target.value })}
-                      className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 outline-none focus:border-orange-500 resize-none"
-                    />
-                  </div>
-
-                  <button
-                    type="submit"
-                    className="px-6 py-3 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-mono font-bold text-xs flex items-center gap-2 shadow-sm transition-all cursor-pointer"
+                  {/* Drag & Drop Zone */}
+                  <div
+                    onDragOver={handleDragOver}
+                    onDragLeave={handleDragLeave}
+                    onDrop={handleDrop}
+                    onClick={() => resumeInputRef.current?.click()}
+                    className={`relative rounded-2xl border-2 border-dashed transition-all cursor-pointer p-6 sm:p-8 text-center flex flex-col items-center justify-center gap-3 ${
+                      isDragging
+                        ? "border-orange-500 bg-orange-50/60 ring-4 ring-orange-500/10 scale-[1.01]"
+                        : "border-zinc-300 hover:border-orange-500 bg-zinc-50/70 hover:bg-orange-50/20"
+                    }`}
                   >
-                    <Save className="w-4 h-4" />
-                    <span>SAVE PROFILE CHANGES</span>
-                  </button>
-                </form>
+                    <div className="w-14 h-14 rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center shadow-inner">
+                      <UploadCloud className="w-7 h-7" />
+                    </div>
+
+                    <div>
+                      <p className="text-sm font-bold text-zinc-800">
+                        {isDragging ? "Drop your resume file here!" : "Drag & drop your Resume file here, or"}
+                      </p>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          resumeInputRef.current?.click();
+                        }}
+                        className="mt-1.5 px-4 py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-mono font-bold text-xs shadow-sm transition-all cursor-pointer inline-flex items-center gap-1.5 hover:scale-105"
+                      >
+                        <FileText className="w-3.5 h-3.5" />
+                        <span>Select File from Computer</span>
+                      </button>
+                    </div>
+
+                    <span className="text-[10px] font-mono text-zinc-400">
+                      Supports PDF, DOC, DOCX • File automatically updates the Download CV link
+                    </span>
+                  </div>
+
+                  {/* Error Notification */}
+                  {fileError && (
+                    <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-mono flex items-center gap-2">
+                      <ShieldAlert className="w-4 h-4 shrink-0" />
+                      <span>{fileError}</span>
+                    </div>
+                  )}
+
+                  {/* Upload Success Alert */}
+                  {uploadSuccessMsg && (
+                    <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-mono flex items-center gap-2">
+                      <CheckCircle className="w-4 h-4 shrink-0" />
+                      <span>Resume uploaded and saved to portfolio successfully!</span>
+                    </div>
+                  )}
+
+                  {/* Uploaded Active Resume Card */}
+                  {resumeFile && (
+                    <div className="p-4 rounded-2xl bg-white border border-orange-200 shadow-xs flex flex-wrap items-center justify-between gap-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-11 h-11 rounded-xl bg-orange-50 border border-orange-200 text-orange-600 flex items-center justify-center shrink-0 shadow-2xs">
+                          <FileText className="w-5 h-5" />
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <span className="font-bold text-zinc-900 text-xs sm:text-sm truncate max-w-[220px] sm:max-w-[320px]">
+                              {resumeFile.name}
+                            </span>
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-[9px] font-mono font-bold">
+                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                              ACTIVE CV
+                            </span>
+                          </div>
+                          <span className="text-[11px] font-mono text-zinc-400">
+                            {formatFileSize(resumeFile.size)} • Uploaded on {resumeFile.uploadedAt}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <a
+                          href={resumeFile.dataUrl}
+                          download={resumeFile.name}
+                          onClick={(e) => e.stopPropagation()}
+                          className="px-3 py-1.5 rounded-xl bg-zinc-100 hover:bg-orange-50 text-zinc-700 hover:text-orange-600 border border-zinc-200 text-xs font-mono font-semibold flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs"
+                        >
+                          <Download className="w-3.5 h-3.5" />
+                          <span>Download</span>
+                        </a>
+
+                        <button
+                          type="button"
+                          onClick={handleRemoveResume}
+                          className="p-1.5 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 transition-colors cursor-pointer"
+                          title="Remove Resume"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Profile Text Details Form */}
+                <div className="pt-6 border-t border-zinc-100">
+                  <div className="mb-4">
+                    <h3 className="font-mono text-zinc-800 uppercase font-bold text-xs">
+                      PERSONAL & PROFESSIONAL BIO DETAILS
+                    </h3>
+                    <p className="text-[11px] font-mono text-zinc-400">Edit your name, headline, and bio visible across the site</p>
+                  </div>
+
+                  <form onSubmit={handleSaveProfile} className="space-y-4 text-xs">
+                    <div>
+                      <label className="font-mono text-zinc-500 uppercase font-bold block mb-1">
+                        FULL NAME
+                      </label>
+                      <input
+                        type="text"
+                        value={profileForm.name}
+                        onChange={(e) => setProfileForm({ ...profileForm, name: e.target.value })}
+                        className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 outline-none focus:border-orange-500"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="font-mono text-zinc-500 uppercase font-bold block mb-1">
+                        PROFESSIONAL TITLE
+                      </label>
+                      <input
+                        type="text"
+                        value={profileForm.title}
+                        onChange={(e) => setProfileForm({ ...profileForm, title: e.target.value })}
+                        className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 outline-none focus:border-orange-500"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="font-mono text-zinc-500 uppercase font-bold block mb-1">
+                        AVAILABILITY BADGE TEXT
+                      </label>
+                      <input
+                        type="text"
+                        value={profileForm.availability}
+                        onChange={(e) => setProfileForm({ ...profileForm, availability: e.target.value })}
+                        className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 outline-none focus:border-orange-500"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="font-mono text-zinc-500 uppercase font-bold block mb-1">
+                        LOCATION
+                      </label>
+                      <input
+                        type="text"
+                        value={profileForm.location}
+                        onChange={(e) => setProfileForm({ ...profileForm, location: e.target.value })}
+                        className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 outline-none focus:border-orange-500"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="font-mono text-zinc-500 uppercase font-bold block mb-1">
+                        TAGLINE / HERO MISSION STATEMENT
+                      </label>
+                      <textarea
+                        rows={3}
+                        value={profileForm.tagline}
+                        onChange={(e) => setProfileForm({ ...profileForm, tagline: e.target.value })}
+                        className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 outline-none focus:border-orange-500 resize-none"
+                      />
+                    </div>
+
+                    <button
+                      type="submit"
+                      className="px-6 py-3 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-mono font-bold text-xs flex items-center gap-2 shadow-sm transition-all cursor-pointer"
+                    >
+                      <Save className="w-4 h-4" />
+                      <span>SAVE PROFILE CHANGES</span>
+                    </button>
+                  </form>
+                </div>
               </div>
             )}
           </div>
@@ -946,24 +1256,112 @@ export default function AdminPage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto"
+              className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto"
             >
               <motion.div
-                initial={{ scale: 0.95 }}
-                animate={{ scale: 1 }}
-                exit={{ scale: 0.95 }}
-                className="w-full max-w-xl p-6 rounded-3xl bg-white border border-zinc-200 shadow-2xl space-y-4 my-8"
+                initial={{ scale: 0.95, y: 15 }}
+                animate={{ scale: 1, y: 0 }}
+                exit={{ scale: 0.95, y: 15 }}
+                className="w-full max-w-xl max-h-[90vh] overflow-y-auto terminal-scroll p-4 sm:p-6 rounded-3xl bg-white border border-zinc-200 shadow-2xl space-y-4 my-auto"
               >
                 <div className="flex items-center justify-between pb-3 border-b border-zinc-100">
-                  <h3 className="font-bold text-zinc-900 text-base">
-                    {editingProject ? "Edit Project Details" : "Add New Project"}
-                  </h3>
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-xl bg-orange-50 border border-orange-200 flex items-center justify-center text-orange-600">
+                      <Sparkles className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-zinc-900 text-sm sm:text-base">
+                        {editingProject ? "Edit Project Details" : "Add New Project"}
+                      </h3>
+                      <p className="text-[10px] font-mono text-zinc-500">
+                        Auto-fetch details from URL or enter manually
+                      </p>
+                    </div>
+                  </div>
                   <button
                     onClick={() => setShowProjectModal(false)}
-                    className="p-1 rounded-full text-zinc-400 hover:text-zinc-600"
+                    className="p-1 rounded-full text-zinc-400 hover:text-zinc-600 cursor-pointer"
                   >
                     <XCircle className="w-5 h-5" />
                   </button>
+                </div>
+
+                {/* Quick Auto-Fetch Box */}
+                <div className="p-3.5 sm:p-4 rounded-2xl bg-gradient-to-br from-orange-50/80 via-white to-amber-50/60 border border-orange-300/80 shadow-xs space-y-2.5">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-mono text-orange-800 font-bold uppercase tracking-wider flex items-center gap-1.5">
+                      <Sparkles className="w-3.5 h-3.5 text-orange-600 shrink-0" />
+                      AUTO-FETCH DETAILS FROM LINKS
+                    </span>
+                    <span className="text-[9px] font-mono text-zinc-400 font-semibold">
+                      GitHub & Live Website
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-zinc-600 leading-snug">
+                    Bss apna <b>Project / Live Website Link</b> ya <b>GitHub Repo URL</b> daal kar button dabayein — Title, Subtitle, Description, Tech Stack, Category aur Image khud fetch ho jayegi!
+                  </p>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <div>
+                      <label className="font-mono text-[10px] text-zinc-500 uppercase font-bold block mb-1">
+                        PROJECT LINK / LIVE DEMO
+                      </label>
+                      <input
+                        type="text"
+                        value={projectForm.demoUrl}
+                        onChange={(e) => setProjectForm({ ...projectForm, demoUrl: e.target.value })}
+                        placeholder="https://eduroadmap.vercel.app"
+                        className="w-full bg-white border border-zinc-200 focus:border-orange-500 rounded-xl px-3 py-1.5 text-xs outline-none transition-colors shadow-2xs"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="font-mono text-[10px] text-zinc-500 uppercase font-bold block mb-1">
+                        GITHUB REPO URL
+                      </label>
+                      <input
+                        type="text"
+                        value={projectForm.githubUrl}
+                        onChange={(e) => setProjectForm({ ...projectForm, githubUrl: e.target.value })}
+                        placeholder="https://github.com/owner/repo"
+                        className="w-full bg-white border border-zinc-200 focus:border-orange-500 rounded-xl px-3 py-1.5 text-xs outline-none transition-colors shadow-2xs"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
+                    <button
+                      type="button"
+                      onClick={handleAutoFetchMetadata}
+                      disabled={isFetchingMetadata}
+                      className="w-full sm:w-auto px-4 py-2 rounded-xl bg-gradient-to-r from-orange-500 via-orange-600 to-amber-500 text-white font-mono font-bold text-xs shadow-sm hover:shadow-md hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
+                    >
+                      {isFetchingMetadata ? (
+                        <>
+                          <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                          <span>FETCHING DETAILS...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Sparkles className="w-3.5 h-3.5" />
+                          <span>⚡ AUTO-FETCH DETAILS</span>
+                        </>
+                      )}
+                    </button>
+
+                    {fetchSuccess && (
+                      <span className="text-[11px] font-mono text-emerald-600 font-bold flex items-center gap-1">
+                        <CheckCircle className="w-3.5 h-3.5" /> Details fetched successfully!
+                      </span>
+                    )}
+                  </div>
+
+                  {fetchError && (
+                    <div className="p-2 rounded-lg bg-red-50 border border-red-200 text-[11px] font-mono text-red-600 flex items-center gap-1.5">
+                      <ShieldAlert className="w-3.5 h-3.5 shrink-0" />
+                      <span>{fetchError}</span>
+                    </div>
+                  )}
                 </div>
 
                 <form onSubmit={handleSaveProject} className="space-y-3 text-xs">
@@ -976,42 +1374,44 @@ export default function AdminPage() {
                       required
                       value={projectForm.title}
                       onChange={(e) => setProjectForm({ ...projectForm, title: e.target.value })}
-                      placeholder="e.g. NeuroFlow AI"
-                      className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2 text-sm outline-none focus:border-orange-500"
+                      placeholder="e.g. Edu Roadmap"
+                      className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-3.5 py-2 text-xs sm:text-sm outline-none focus:border-orange-500"
                     />
                   </div>
 
-                  <div>
-                    <label className="font-mono text-zinc-500 uppercase font-bold block mb-1">
-                      SUBTITLE
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={projectForm.subtitle}
-                      onChange={(e) => setProjectForm({ ...projectForm, subtitle: e.target.value })}
-                      placeholder="e.g. Autonomous Task Orchestrator"
-                      className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2 text-sm outline-none focus:border-orange-500"
-                    />
-                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label className="font-mono text-zinc-500 uppercase font-bold block mb-1">
+                        SUBTITLE
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={projectForm.subtitle}
+                        onChange={(e) => setProjectForm({ ...projectForm, subtitle: e.target.value })}
+                        placeholder="e.g. Interactive Learning Roadmaps"
+                        className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-3.5 py-2 text-xs sm:text-sm outline-none focus:border-orange-500"
+                      />
+                    </div>
 
-                  <div>
-                    <label className="font-mono text-zinc-500 uppercase font-bold block mb-1">
-                      CATEGORY
-                    </label>
-                    <select
-                      value={projectForm.category}
-                      onChange={(e) => setProjectForm({ ...projectForm, category: e.target.value as any })}
-                      className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2 text-sm outline-none focus:border-orange-500 cursor-pointer"
-                    >
-                      <option value="AI / ML">AI / ML</option>
-                      <option value="AI Agents">AI Agents</option>
-                      <option value="Computer Vision">Computer Vision</option>
-                      <option value="NLP">NLP</option>
-                      <option value="Full Stack">Full Stack</option>
-                      <option value="SaaS">SaaS</option>
-                      <option value="Automation">Automation</option>
-                    </select>
+                    <div>
+                      <label className="font-mono text-zinc-500 uppercase font-bold block mb-1">
+                        CATEGORY
+                      </label>
+                      <select
+                        value={projectForm.category}
+                        onChange={(e) => setProjectForm({ ...projectForm, category: e.target.value as any })}
+                        className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-3.5 py-2 text-xs sm:text-sm outline-none focus:border-orange-500 cursor-pointer"
+                      >
+                        <option value="AI / ML">AI / ML</option>
+                        <option value="AI Agents">AI Agents</option>
+                        <option value="Computer Vision">Computer Vision</option>
+                        <option value="NLP">NLP</option>
+                        <option value="Full Stack">Full Stack</option>
+                        <option value="SaaS">SaaS</option>
+                        <option value="Automation">Automation</option>
+                      </select>
+                    </div>
                   </div>
 
                   <div>
@@ -1023,7 +1423,8 @@ export default function AdminPage() {
                       rows={3}
                       value={projectForm.description}
                       onChange={(e) => setProjectForm({ ...projectForm, description: e.target.value })}
-                      className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2 text-sm outline-none focus:border-orange-500 resize-none"
+                      placeholder="Tell what the project does, key highlights or features..."
+                      className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-3.5 py-2 text-xs sm:text-sm outline-none focus:border-orange-500 resize-none"
                     />
                   </div>
 
@@ -1036,7 +1437,7 @@ export default function AdminPage() {
                       value={projectForm.technologies}
                       onChange={(e) => setProjectForm({ ...projectForm, technologies: e.target.value })}
                       placeholder="Next.js, TypeScript, Tailwind CSS, Python"
-                      className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2 text-sm outline-none focus:border-orange-500"
+                      className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-3.5 py-2 text-xs sm:text-sm outline-none focus:border-orange-500"
                     />
                   </div>
 
@@ -1048,48 +1449,37 @@ export default function AdminPage() {
                       type="text"
                       value={projectForm.image}
                       onChange={(e) => setProjectForm({ ...projectForm, image: e.target.value })}
-                      placeholder="e.g. /projects/neuroflow.jpg or https://image-url.png"
-                      className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2 text-xs outline-none focus:border-orange-500"
+                      placeholder="e.g. https://image-url.png or /projects/preview.jpg"
+                      className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-3.5 py-2 text-xs outline-none focus:border-orange-500"
                     />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="font-mono text-zinc-500 uppercase font-bold block mb-1">
-                        GITHUB URL
-                      </label>
-                      <input
-                        type="text"
-                        value={projectForm.githubUrl}
-                        onChange={(e) => setProjectForm({ ...projectForm, githubUrl: e.target.value })}
-                        className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2 text-xs outline-none focus:border-orange-500"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="font-mono text-zinc-500 uppercase font-bold block mb-1">
-                        DEMO URL (Optional)
-                      </label>
-                      <input
-                        type="text"
-                        value={projectForm.demoUrl}
-                        onChange={(e) => setProjectForm({ ...projectForm, demoUrl: e.target.value })}
-                        className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2 text-xs outline-none focus:border-orange-500"
-                      />
-                    </div>
+                    {projectForm.image && (
+                      <div className="relative w-full h-24 rounded-xl overflow-hidden border border-zinc-200 bg-zinc-100 mt-2">
+                        <img
+                          src={projectForm.image}
+                          alt="Project Preview"
+                          className="w-full h-full object-cover object-top"
+                          onError={(e) => {
+                            (e.target as HTMLElement).style.display = "none";
+                          }}
+                        />
+                        <span className="absolute bottom-1 right-2 text-[9px] font-mono bg-black/70 text-white px-2 py-0.5 rounded backdrop-blur-xs">
+                          Preview Image Detected
+                        </span>
+                      </div>
+                    )}
                   </div>
 
                   <div className="pt-3 border-t border-zinc-100 flex items-center justify-end gap-2">
                     <button
                       type="button"
                       onClick={() => setShowProjectModal(false)}
-                      className="px-4 py-2 rounded-xl bg-zinc-100 text-zinc-700 font-mono text-xs cursor-pointer"
+                      className="px-4 py-2 rounded-xl bg-zinc-100 hover:bg-zinc-200 text-zinc-700 font-mono text-xs cursor-pointer transition-colors"
                     >
                       Cancel
                     </button>
                     <button
                       type="submit"
-                      className="px-5 py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-mono font-bold text-xs shadow-sm cursor-pointer"
+                      className="px-5 py-2 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-mono font-bold text-xs shadow-sm hover:shadow transition-all cursor-pointer"
                     >
                       Save Project
                     </button>
