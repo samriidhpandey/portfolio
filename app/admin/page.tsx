@@ -82,13 +82,8 @@ export default function AdminPage() {
 
   const [certForm, setCertForm] = useState({
     title: "",
-    issuer: "",
-    linkedinPostId: "",
-    linkedinUrl: "",
-    issueDate: new Date().getFullYear().toString(),
-    category: "Full Stack",
-    description: "",
-    image: ""
+    image: "",
+    linkedinPostId: ""
   });
 
   // Visitors & Analytics state
@@ -606,13 +601,8 @@ export default function AdminPage() {
     setCertError(null);
     setCertForm({
       title: "",
-      issuer: "",
-      linkedinPostId: "",
-      linkedinUrl: "",
-      issueDate: new Date().getFullYear().toString(),
-      category: "Full Stack",
-      description: "",
-      image: ""
+      image: "",
+      linkedinPostId: ""
     });
     setShowCertModal(true);
   };
@@ -625,13 +615,8 @@ export default function AdminPage() {
     setCertError(null);
     setCertForm({
       title: cert.title || "",
-      issuer: cert.issuer || "",
-      linkedinPostId: cert.linkedinPostId || "",
-      linkedinUrl: cert.linkedinUrl || "",
-      issueDate: cert.issueDate || new Date().getFullYear().toString(),
-      category: cert.category || "Full Stack",
-      description: cert.description || "",
-      image: cert.image || ""
+      image: cert.image || "",
+      linkedinPostId: cert.linkedinPostId || cert.linkedinUrl || ""
     });
     setShowCertModal(true);
   };
@@ -639,89 +624,94 @@ export default function AdminPage() {
   const handleCertImageSelect = (file: File) => {
     setCertError(null);
     if (!file.type.startsWith("image/")) {
-      setCertError("Please upload an image file (PNG, JPG, WEBP, SVG, etc.)");
+      setCertError("Please upload an image file (PNG, JPG, WEBP, SVG)");
       sound.playClick();
       return;
     }
 
-    if (file.size > 20 * 1024 * 1024) {
-      setCertError("Image size exceeds 20MB. Please choose a smaller image.");
+    if (file.size > 25 * 1024 * 1024) {
+      setCertError("Image size exceeds 25MB. Please choose a smaller image.");
       sound.playClick();
       return;
     }
 
-    setCertFile(file);
-    const previewUrl = URL.createObjectURL(file);
-    setCertPreviewUrl(previewUrl);
-    sound.playHover();
+    const reader = new FileReader();
+    reader.onload = () => {
+      const dataUrl = reader.result as string;
+      setCertPreviewUrl(dataUrl);
+      setCertForm((prev) => ({ ...prev, image: dataUrl }));
+      sound.playHover();
+    };
+    reader.readAsDataURL(file);
   };
 
   const handleSaveCertificate = async (e: React.FormEvent) => {
     e.preventDefault();
     sound.playClick();
+
+    if (!certForm.title.trim()) {
+      setCertError("Please enter a certificate title.");
+      return;
+    }
+
     setIsCertSaving(true);
-    setCertError(null);
+    const newId = editingCert ? editingCert.id : `cert-${Date.now()}`;
+    const cleanPostId = (certForm.linkedinPostId || "").trim();
+    const cleanUrl = formatLinkedInUrl(cleanPostId);
 
+    const savedItem: CertificateItem = {
+      id: newId,
+      title: certForm.title.trim(),
+      image: certForm.image || certPreviewUrl || "",
+      linkedinPostId: cleanPostId,
+      linkedinUrl: cleanUrl,
+      issuer: "LinkedIn Verified",
+      badge: "Verified"
+    };
+
+    let updated: CertificateItem[];
+    if (editingCert) {
+      updated = certificates.map((c) => (c.id === editingCert.id ? savedItem : c));
+    } else {
+      updated = [savedItem, ...certificates];
+    }
+
+    // Instantly update UI and localStorage
+    setCertificates(updated);
+    localStorage.setItem("admin_certificates", JSON.stringify(updated));
+    window.dispatchEvent(new Event("admin-certificates-updated"));
+    setShowCertModal(false);
+    setIsCertSaving(false);
+    sound.playSuccess();
+
+    // Call API in background
     try {
-      const formData = new FormData();
-      if (editingCert) {
-        formData.append("id", editingCert.id);
-      }
-      formData.append("title", certForm.title.trim());
-      formData.append("issuer", certForm.issuer.trim());
-      formData.append("linkedinPostId", certForm.linkedinPostId.trim());
-      formData.append("linkedinUrl", certForm.linkedinUrl.trim());
-      formData.append("issueDate", certForm.issueDate.trim());
-      formData.append("category", certForm.category);
-      formData.append("description", certForm.description.trim());
-
-      if (certFile) {
-        formData.append("image", certFile);
-      } else if (certForm.image) {
-        formData.append("imageUrl", certForm.image);
-      }
-
-      const res = await fetch("/api/certificates", {
+      await fetch("/api/certificates", {
         method: "POST",
-        body: formData
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(savedItem)
       });
-
-      const json = await res.json();
-      if (!res.ok || !json.success) {
-        throw new Error(json.error || "Failed to save certificate.");
-      }
-
-      setCertificates(json.certificates);
-      localStorage.setItem("admin_certificates", JSON.stringify(json.certificates));
-      window.dispatchEvent(new Event("admin-certificates-updated"));
-      setShowCertModal(false);
-      sound.playSuccess();
-    } catch (err: any) {
-      console.error(err);
-      setCertError(err.message || "Failed to save certificate.");
-    } finally {
-      setIsCertSaving(false);
+    } catch (err) {
+      console.warn("Saved locally, server API warning:", err);
     }
   };
 
   const handleDeleteCertificate = async (id: string) => {
-    if (!confirm("Are you sure you want to remove this certificate from your portfolio?")) {
-      return;
-    }
     sound.playClick();
+    // Instantly update state and localStorage
+    const updated = certificates.filter((c) => c.id !== id);
+    setCertificates(updated);
+    localStorage.setItem("admin_certificates", JSON.stringify(updated));
+    window.dispatchEvent(new Event("admin-certificates-updated"));
+    sound.playSuccess();
+
+    // Call delete API in background
     try {
-      const res = await fetch(`/api/certificates?id=${id}`, {
+      await fetch(`/api/certificates?id=${id}`, {
         method: "DELETE"
       });
-      const json = await res.json();
-      if (res.ok && json.success) {
-        setCertificates(json.certificates);
-        localStorage.setItem("admin_certificates", JSON.stringify(json.certificates));
-        window.dispatchEvent(new Event("admin-certificates-updated"));
-        sound.playSuccess();
-      }
     } catch (err) {
-      console.error("Failed to delete certificate:", err);
+      console.warn("Deleted locally, server API warning:", err);
     }
   };
 
@@ -1323,20 +1313,20 @@ export default function AdminPage() {
                             </div>
 
                             {/* Quick Actions */}
-                            <div className="absolute top-2.5 right-2.5 flex items-center gap-1">
+                            <div className="absolute top-2.5 right-2.5 flex items-center gap-1.5 z-20">
                               <button
                                 onClick={() => handleOpenEditCertModal(cert)}
-                                className="p-1.5 rounded-xl bg-white/95 text-zinc-700 hover:text-orange-600 shadow-xs backdrop-blur-xs transition-colors cursor-pointer"
+                                className="p-2 rounded-xl bg-white/95 text-zinc-700 hover:text-orange-600 shadow-sm backdrop-blur-xs transition-colors cursor-pointer"
                                 title="Edit Certificate"
                               >
-                                <Edit className="w-3.5 h-3.5" />
+                                <Edit className="w-4 h-4" />
                               </button>
                               <button
                                 onClick={() => handleDeleteCertificate(cert.id)}
-                                className="p-1.5 rounded-xl bg-white/95 text-red-600 hover:bg-red-50 shadow-xs backdrop-blur-xs transition-colors cursor-pointer"
+                                className="p-2 rounded-xl bg-red-600 text-white hover:bg-red-700 shadow-sm transition-colors cursor-pointer"
                                 title="Delete Certificate"
                               >
-                                <Trash2 className="w-3.5 h-3.5" />
+                                <Trash2 className="w-4 h-4" />
                               </button>
                             </div>
                           </div>
@@ -1344,24 +1334,15 @@ export default function AdminPage() {
                           {/* Info Body */}
                           <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between space-y-3">
                             <div>
-                              <div className="flex items-center justify-between text-[11px] font-mono text-zinc-500 mb-1">
-                                <span className="font-semibold text-orange-700 truncate">{cert.issuer}</span>
-                                {cert.issueDate && <span>{cert.issueDate}</span>}
-                              </div>
                               <h3 className="font-bold text-zinc-900 text-sm sm:text-base leading-snug">
                                 {cert.title}
                               </h3>
-                              {cert.description && (
-                                <p className="text-xs text-zinc-600 mt-1 line-clamp-2">
-                                  {cert.description}
-                                </p>
-                              )}
                             </div>
 
                             {/* LinkedIn Link Preview in Admin */}
                             <div className="pt-3 border-t border-zinc-100 flex items-center justify-between text-xs">
-                              <span className="text-[11px] font-mono text-zinc-400 truncate max-w-[170px]">
-                                {cert.linkedinPostId ? `ID: ${cert.linkedinPostId}` : "LinkedIn Link"}
+                              <span className="text-[11px] font-mono text-zinc-500 truncate max-w-[170px]">
+                                {cert.linkedinPostId ? `Post ID: ${cert.linkedinPostId}` : "LinkedIn Post"}
                               </span>
 
                               <a
@@ -1370,7 +1351,7 @@ export default function AdminPage() {
                                 rel="noopener noreferrer"
                                 className="inline-flex items-center gap-1 text-[11px] font-mono font-bold text-[#0A66C2] hover:underline"
                               >
-                                <span>Test Post Link</span>
+                                <span>Open Post</span>
                                 <ExternalLink className="w-3 h-3" />
                               </a>
                             </div>
@@ -1966,121 +1947,58 @@ export default function AdminPage() {
                     )}
                   </div>
 
+                  {/* TITLE INPUT */}
+                  <div>
+                    <label className="font-mono text-zinc-600 uppercase font-bold block mb-1">
+                      CERTIFICATE TITLE
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={certForm.title}
+                      onChange={(e) => setCertForm({ ...certForm, title: e.target.value })}
+                      placeholder="e.g. Meta Full-Stack Engineer / Google Cloud / AWS Certified"
+                      className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm outline-none focus:border-orange-500"
+                    />
+                  </div>
+
                   {/* LINKEDIN POST ID OR URL */}
                   <div className="p-3.5 rounded-2xl bg-[#0A66C2]/5 border border-[#0A66C2]/20 space-y-2">
                     <label className="font-mono text-zinc-700 uppercase font-bold flex items-center gap-1.5">
                       <span className="w-2 h-2 rounded-full bg-[#0A66C2]" />
-                      LINKEDIN POST ID OR FULL URL (CLICK OPENS THIS)
+                      LINKEDIN POST ID YA LINK (CLICK PAR KHULEGA)
                     </label>
                     <input
                       type="text"
-                      value={certForm.linkedinPostId || certForm.linkedinUrl}
+                      value={certForm.linkedinPostId}
                       onChange={(e) => {
                         const val = e.target.value;
                         setCertForm({
                           ...certForm,
-                          linkedinPostId: val,
-                          linkedinUrl: val
+                          linkedinPostId: val
                         });
                       }}
-                      placeholder="e.g. 7123456789012345678 or https://www.linkedin.com/feed/update/urn:li:activity:..."
-                      className="w-full bg-white border border-zinc-200 focus:border-[#0A66C2] rounded-xl px-3.5 py-2 text-xs outline-none transition-colors shadow-2xs"
+                      placeholder="e.g. 7234567890123456789 ya full LinkedIn URL"
+                      className="w-full bg-white border border-zinc-200 focus:border-[#0A66C2] rounded-xl px-3.5 py-2.5 text-xs sm:text-sm outline-none transition-colors shadow-2xs"
                     />
                     <div className="flex flex-wrap items-center justify-between gap-1 text-[10px] font-mono text-zinc-500 pt-0.5">
                       <span className="truncate">
-                        Redirects to:{" "}
+                        Redirect URL:{" "}
                         <span className="text-[#0A66C2] font-semibold">
-                          {formatLinkedInUrl(certForm.linkedinPostId || certForm.linkedinUrl || "")}
+                          {formatLinkedInUrl(certForm.linkedinPostId || "")}
                         </span>
                       </span>
-                      {(certForm.linkedinPostId || certForm.linkedinUrl) && (
+                      {certForm.linkedinPostId && (
                         <a
-                          href={formatLinkedInUrl(certForm.linkedinPostId || certForm.linkedinUrl)}
+                          href={formatLinkedInUrl(certForm.linkedinPostId)}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-[#0A66C2] font-bold hover:underline inline-flex items-center gap-0.5"
                         >
-                          <span>Test ↗</span>
+                          <span>Test Link ↗</span>
                         </a>
                       )}
                     </div>
-                  </div>
-
-                  {/* TITLE & ISSUER */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                      <label className="font-mono text-zinc-500 uppercase font-bold block mb-1">
-                        CERTIFICATE TITLE
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        value={certForm.title}
-                        onChange={(e) => setCertForm({ ...certForm, title: e.target.value })}
-                        placeholder="e.g. Full Stack Web Engineering"
-                        className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-3.5 py-2 text-xs outline-none focus:border-orange-500"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="font-mono text-zinc-500 uppercase font-bold block mb-1">
-                        ISSUER / ORGANIZATION
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        value={certForm.issuer}
-                        onChange={(e) => setCertForm({ ...certForm, issuer: e.target.value })}
-                        placeholder="e.g. Meta, Coursera, Google, AWS"
-                        className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-3.5 py-2 text-xs outline-none focus:border-orange-500"
-                      />
-                    </div>
-                  </div>
-
-                  {/* YEAR & CATEGORY */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                      <label className="font-mono text-zinc-500 uppercase font-bold block mb-1">
-                        ISSUE YEAR / DATE
-                      </label>
-                      <input
-                        type="text"
-                        value={certForm.issueDate}
-                        onChange={(e) => setCertForm({ ...certForm, issueDate: e.target.value })}
-                        placeholder="e.g. 2024"
-                        className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-3.5 py-2 text-xs outline-none focus:border-orange-500"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="font-mono text-zinc-500 uppercase font-bold block mb-1">
-                        CATEGORY
-                      </label>
-                      <select
-                        value={certForm.category}
-                        onChange={(e) => setCertForm({ ...certForm, category: e.target.value })}
-                        className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-3.5 py-2 text-xs outline-none focus:border-orange-500 cursor-pointer"
-                      >
-                        <option value="Full Stack">Full Stack</option>
-                        <option value="AI / ML">AI / ML</option>
-                        <option value="Cloud & DevOps">Cloud & DevOps</option>
-                        <option value="Data Science">Data Science</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  {/* DESCRIPTION */}
-                  <div>
-                    <label className="font-mono text-zinc-500 uppercase font-bold block mb-1">
-                      SHORT DESCRIPTION (Optional)
-                    </label>
-                    <textarea
-                      rows={2}
-                      value={certForm.description}
-                      onChange={(e) => setCertForm({ ...certForm, description: e.target.value })}
-                      placeholder="Brief highlight of concepts or skills verified..."
-                      className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-3.5 py-2 text-xs outline-none focus:border-orange-500 resize-none"
-                    />
                   </div>
 
                   {certError && (
