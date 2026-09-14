@@ -1,0 +1,136 @@
+[
+  {
+    "id": "fitfarms-organic",
+    "title": "Fit Farms",
+    "subtitle": "Organic Farm-to-Door D2C Ecommerce Experience",
+    "description": "High-converting modern web platform for fresh organic harvest subscription boxes with instant checkout, smart bundle builder, and recipe discovery.",
+    "longDescription": "Engineered a custom high-performance Next.js storefront for Fit Farms, delivering a 100/100 Lighthouse performance score and increasing recurring harvest box subscriptions by 48%. Features real-time inventory management, automated customer re-ordering, and responsive design with smooth auto-scrolling preview showcases.",
+    "category": "Full Stack",
+    "technologies": [
+      "Next.js",
+      "React",
+      "TypeScript",
+      "Tailwind CSS",
+      "Stripe",
+      "Framer Motion"
+    ],
+    "githubUrl": "https://github.com/samridhpandey/fitfarms-web",
+    "demoUrl": "https://fit-farms.com",
+    "image": "/projects/fitfarms-preview.jpg",
+    "accentColor": "#16A34A",
+    "featured": true,
+    "metrics": [
+      {
+        "label": "Conversion Lift",
+        "value": "+48%"
+      },
+      {
+        "label": "Lighthouse Speed",
+        "value": "100/100"
+      },
+      {
+        "label": "Active Subscribers",
+        "value": "3,200+"
+      }
+    ],
+    "architecture": {
+      "overview": "Ultra-fast headless commerce architecture with edge-rendered static product catalogs and instantaneous client-side navigation.",
+      "challenge": "High cart abandonment rates caused by slow image loads and complex multi-step checkout processes.",
+      "solution": "Implemented automated WebP image optimization, 1-click Stripe express checkout, and fluid interactive product customization.",
+      "highlights": [
+        "Instantaneous page loads (<150ms TTFB globally)",
+        "Automated weekly recurring subscription billing",
+        "Responsive auto-scrolling interactive portfolio preview"
+      ]
+    }
+  },
+  {
+    "id": "cinemedia-studios",
+    "title": "Cine Media Studio",
+    "subtitle": "Luxury Production & Commercial Filmmaking Agency",
+    "description": "Cinematic portfolio and high-converting client acquisition portal for a premier commercial production and brand documentary studio.",
+    "longDescription": "Built an immersive visual portfolio for Cine Media Studio, featuring video showreel embeds, dynamic client proof grids, and an interactive project inquiry estimator. Elevated brand perception and boosted high-ticket client contract inquiries by 320%.",
+    "category": "Full Stack",
+    "technologies": [
+      "Next.js",
+      "TypeScript",
+      "Tailwind CSS",
+      "Three.js",
+      "Framer Motion",
+      "Vercel"
+    ],
+    "githubUrl": "https://github.com/samridhpandey/cinemedia-studio",
+    "demoUrl": "https://cinemediastudio.com",
+    "image": "/projects/cinemedia-preview.jpg",
+    "accentColor": "#EA580C",
+    "featured": true,
+    "metrics": [
+      {
+        "label": "Client Inquiries",
+        "value": "+320%"
+      },
+      {
+        "label": "Avg Session",
+        "value": "4m 12s"
+      },
+      {
+        "label": "Showreel Play Rate",
+        "value": "92%"
+      }
+    ],
+    "architecture": {
+      "overview": "Edge-cached Next.js application with progressive video streaming and GPU-accelerated micro-interactions.",
+      "challenge": "Heavy 4K video assets slowing down initial page render and mobile responsiveness.",
+      "solution": "Implemented adaptive video bitrate streaming with HLS and lazy-loaded WebGL canvas filters.",
+      "highlights": [
+        "Zero layout shift responsive video showcases",
+        "Interactive inquiry and project scope budget estimator",
+        "Seamless full-page hover auto-scroll preview"
+      ]
+    }
+  },
+  {
+    "id": "aura-natural-soap",
+    "title": "Aura Botanical",
+    "subtitle": "Artisanal Organic Skincare & E-Commerce Flagship",
+    "description": "Minimalist luxury e-commerce experience for handcrafted cold-process botanical soaps with ingredient transparency and custom bundling.",
+    "longDescription": "Designed and developed an editorial-grade online store for Aura Botanical. Built around tactile earth tones and crisp typography, the experience highlights raw organic botanicals, increasing average order value (AOV) by 35% within 60 days of launch.",
+    "category": "Full Stack",
+    "technologies": [
+      "Next.js",
+      "TypeScript",
+      "Tailwind CSS",
+      "Shopify Storefront API",
+      "Framer Motion"
+    ],
+    "githubUrl": "https://github.com/samridhpandey/aura-soap",
+    "demoUrl": "https://aurasoap.com",
+    "image": "/projects/soap-preview.jpg",
+    "accentColor": "#F59E0B",
+    "featured": true,
+    "metrics": [
+      {
+        "label": "AOV Growth",
+        "value": "+35%"
+      },
+      {
+        "label": "Repeat Buyers",
+        "value": "42%"
+      },
+      {
+        "label": "Page Speed",
+        "value": "99/100"
+      }
+    ],
+    "architecture": {
+      "overview": "Headless Shopify architecture powered by Next.js App Router and edge caching.",
+      "challenge": "Balancing rich editorial photography with instantaneous product filtering and cart drawer speeds.",
+      "solution": "Optimized multi-layer image caching with Next/Image and optimistic cart state management.",
+      "highlights": [
+        "Interactive ingredient transparency modal dossiers",
+        "Optimistic cart drawer with one-tap checkout",
+        "Hover auto-scroll full-page website preview"
+      ]
+    }
+  }
+]

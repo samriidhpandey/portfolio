@@ -159,16 +159,32 @@ export default function AdminPage() {
     }
 
     // Load or seed projects
-    const savedProjects = localStorage.getItem("admin_projects");
-    if (savedProjects) {
+    const fetchProjects = async () => {
       try {
-        setProjects(JSON.parse(savedProjects));
-      } catch (e) {
-        setProjects(projectsData);
+        const res = await fetch("/api/projects");
+        if (res.ok) {
+          const json = await res.json();
+          if (json.success && Array.isArray(json.projects)) {
+            setProjects(json.projects);
+            localStorage.setItem("admin_projects", JSON.stringify(json.projects));
+            return;
+          }
+        }
+      } catch (e) {}
+
+      const savedProjects = localStorage.getItem("admin_projects");
+      if (savedProjects) {
+        try {
+          const parsed = JSON.parse(savedProjects);
+          if (Array.isArray(parsed)) {
+            setProjects(parsed);
+            return;
+          }
+        } catch (e) {}
       }
-    } else {
       setProjects(projectsData);
-    }
+    };
+    fetchProjects();
 
     // Load profile
     const savedProfile = localStorage.getItem("admin_profile");
@@ -390,31 +406,29 @@ export default function AdminPage() {
     }
   };
 
-  const handleSaveProject = (e: React.FormEvent) => {
+  const handleSaveProject = async (e: React.FormEvent) => {
     e.preventDefault();
     sound.playClick();
 
     const techArray = projectForm.technologies.split(",").map((t) => t.trim()).filter(Boolean);
 
+    let projToSave: ProjectItem;
     let updatedList: ProjectItem[];
     if (editingProject) {
-      updatedList = projects.map((p) =>
-        p.id === editingProject.id
-          ? {
-              ...p,
-              title: projectForm.title,
-              subtitle: projectForm.subtitle,
-              category: projectForm.category as any,
-              description: projectForm.description,
-              githubUrl: projectForm.githubUrl,
-              demoUrl: projectForm.demoUrl,
-              image: projectForm.image || undefined,
-              technologies: techArray
-            }
-          : p
-      );
+      projToSave = {
+        ...editingProject,
+        title: projectForm.title,
+        subtitle: projectForm.subtitle,
+        category: projectForm.category as any,
+        description: projectForm.description,
+        githubUrl: projectForm.githubUrl,
+        demoUrl: projectForm.demoUrl,
+        image: projectForm.image || undefined,
+        technologies: techArray
+      };
+      updatedList = projects.map((p) => (p.id === editingProject.id ? projToSave : p));
     } else {
-      const newProj: ProjectItem = {
+      projToSave = {
         id: `proj-${Date.now()}`,
         title: projectForm.title,
         subtitle: projectForm.subtitle,
@@ -435,7 +449,7 @@ export default function AdminPage() {
           highlights: ["Sub-second page load", "Full SEO optimization"]
         }
       };
-      updatedList = [newProj, ...projects];
+      updatedList = [projToSave, ...projects];
     }
 
     setProjects(updatedList);
@@ -443,14 +457,30 @@ export default function AdminPage() {
     window.dispatchEvent(new Event("admin-projects-updated"));
     setShowProjectModal(false);
     sound.playSuccess();
+
+    try {
+      await fetch("/api/projects", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(projToSave)
+      });
+    } catch (err) {
+      console.error("Failed to save project on server:", err);
+    }
   };
 
-  const handleDeleteProject = (id: string) => {
+  const handleDeleteProject = async (id: string) => {
     sound.playClick();
     const updated = projects.filter((p) => p.id !== id);
     setProjects(updated);
     localStorage.setItem("admin_projects", JSON.stringify(updated));
     window.dispatchEvent(new Event("admin-projects-updated"));
+
+    try {
+      await fetch(`/api/projects?id=${id}`, { method: "DELETE" });
+    } catch (e) {
+      console.error("Failed to delete project on server:", e);
+    }
   };
 
   // Resume File Handlers

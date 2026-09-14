@@ -12,27 +12,31 @@ export default function Projects() {
   const [activeModalProject, setActiveModalProject] = useState<ProjectItem | null>(null);
   const [allProjects, setAllProjects] = useState<ProjectItem[]>(projectsData);
 
-  const loadProjects = () => {
+  const loadProjects = async () => {
+    try {
+      const res = await fetch("/api/projects");
+      if (res.ok) {
+        const json = await res.json();
+        if (json.success && Array.isArray(json.projects)) {
+          setAllProjects(json.projects);
+          return;
+        }
+      }
+    } catch (e) {}
+
     if (typeof window !== "undefined") {
       const saved = localStorage.getItem("admin_projects");
       if (saved) {
         try {
           const parsed = JSON.parse(saved);
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            const merged = parsed.map((item: ProjectItem) => {
-              const def = projectsData.find((d) => d.id === item.id);
-              return {
-                ...item,
-                image: item.image || (def ? def.image : undefined)
-              };
-            });
-            setAllProjects(merged);
+          if (Array.isArray(parsed)) {
+            setAllProjects(parsed);
             return;
           }
         } catch (e) {}
       }
-      setAllProjects(projectsData);
     }
+    setAllProjects(projectsData);
   };
 
   useEffect(() => {
@@ -55,6 +59,8 @@ export default function Projects() {
     return p.category === selectedCategory;
   });
 
+  const availableCategories = ["All", ...Array.from(new Set(allProjects.map((p) => p.category).filter(Boolean)))];
+
   return (
     <section id="projects" className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto relative">
       {/* Section Header */}
@@ -73,7 +79,7 @@ export default function Projects() {
 
       {/* Category Tabs */}
       <div className="flex flex-wrap gap-2 mb-12 pb-2 border-b border-zinc-200/80">
-        {projectCategories.map((cat) => {
+        {availableCategories.map((cat) => {
           const isActive = selectedCategory === cat;
           return (
             <button
